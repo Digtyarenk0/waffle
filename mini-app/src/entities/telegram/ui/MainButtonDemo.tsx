@@ -1,9 +1,6 @@
+import { MainButton, MainButtonProps } from '@vkruglikov/react-telegram-web-app';
 import { Button, Form, Input, Typography, Switch } from 'antd';
 import { FC, useState } from 'react';
-import {
-  MainButton,
-  MainButtonProps,
-} from '@vkruglikov/react-telegram-web-app';
 
 const MainButtonDemo: FC<{
   initialValues?: Partial<MainButtonProps> & { show?: boolean };
@@ -37,7 +34,7 @@ const MainButtonDemo: FC<{
         </Form.Item>
         <Form.Item name="progress" label="progress" valuePropName="checked">
           <Switch
-            onChange={value =>
+            onChange={(value) =>
               setButtonState({
                 ...buttonState,
                 progress: value,
@@ -47,7 +44,7 @@ const MainButtonDemo: FC<{
         </Form.Item>
         <Form.Item name="disable" label="disable" valuePropName="checked">
           <Switch
-            onChange={value =>
+            onChange={(value) =>
               setButtonState({
                 ...buttonState,
                 disable: value,

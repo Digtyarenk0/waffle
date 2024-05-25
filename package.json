@@ -1,0 +1,17 @@
+{
+  "name": "azen_telegram_bot_server",
+  "version": "0.1",
+  "description": "server_side",
+  "main": "index.js",
+  "repository": "git@github.com:Digtyarenk0/azen.git",
+  "author": "Digtyarenk0 <uhmeplay811@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon server"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-telegram-bot-api": "^0.66.0",
+    "nodemon": "^3.1.1"
+  }
+}

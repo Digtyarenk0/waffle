@@ -1,7 +1,5 @@
-import { WebAppProvider } from "@vkruglikov/react-telegram-web-app";
+import { WebAppProvider } from '@vkruglikov/react-telegram-web-app';
 
-export const TelegramWebProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => <WebAppProvider>{children}</WebAppProvider>;
+export const TelegramWebProvider = ({ children }: { children: React.ReactNode }) => (
+  <WebAppProvider>{children}</WebAppProvider>
+);

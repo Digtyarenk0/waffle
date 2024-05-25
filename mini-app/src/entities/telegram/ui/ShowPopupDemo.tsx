@@ -1,15 +1,10 @@
+import { ShowPopupParams, useShowPopup } from '@vkruglikov/react-telegram-web-app';
 import { Button, Form, Input, Typography } from 'antd';
 import { FC, useState } from 'react';
-import {
-  ShowPopupParams,
-  useShowPopup,
-} from '@vkruglikov/react-telegram-web-app';
 
 const ShowPopupDemo: FC = () => {
   const showPopup = useShowPopup();
-  const [popupState, setPopupState] = useState<
-    Pick<ShowPopupParams, 'title' | 'message'>
-  >({
+  const [popupState, setPopupState] = useState<Pick<ShowPopupParams, 'title' | 'message'>>({
     title: 'title',
     message: 'message',
   });
@@ -29,7 +24,7 @@ const ShowPopupDemo: FC = () => {
           text: 'destructive',
         },
       ],
-    }).catch(e => {
+    }).catch((e) => {
       showPopup({
         title: 'error',
         message: e,

@@ -1,5 +1,5 @@
-import { Button, Form, Typography } from 'antd';
 import { useExpand } from '@vkruglikov/react-telegram-web-app';
+import { Button, Form, Typography } from 'antd';
 
 const ExpandDemo = () => {
   const [isExpanded, expand] = useExpand();
@@ -7,12 +7,7 @@ const ExpandDemo = () => {
   return (
     <>
       <Typography.Title level={3}>useExpand</Typography.Title>
-      <Form
-        labelCol={{ span: 6 }}
-        name="ExpandDemo"
-        layout="horizontal"
-        autoComplete="off"
-      >
+      <Form labelCol={{ span: 6 }} name="ExpandDemo" layout="horizontal" autoComplete="off">
         <Form.Item name="isExpanded">
           <Typography.Text>isExpanded: {`${isExpanded}`}</Typography.Text>
         </Form.Item>

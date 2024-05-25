@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --tg-theme-bg-color: #fff;
   --tg-theme-text-color: #0a0a0a;

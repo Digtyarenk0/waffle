@@ -1,28 +1,21 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { DispatchWithoutAction, FC, useEffect, useState } from "react";
-import {
-  useCloudStorage,
-  useExpand,
-  useInitData,
-  useThemeParams,
-} from "@vkruglikov/react-telegram-web-app";
-import { ConfigProvider, theme } from "antd";
-import "antd/dist/reset.css";
+import { DispatchWithoutAction, FC, useEffect, useState } from 'react';
+import { useCloudStorage, useExpand, useInitData, useThemeParams } from '@vkruglikov/react-telegram-web-app';
+import { ConfigProvider, theme } from 'antd';
+import 'antd/dist/reset.css';
 
-import logo from "../../shared/assets/logo.svg";
+import { ethers, JsonRpcProvider, Wallet } from 'ethers';
 
-import MainButtonDemo from "../../entities/telegram/ui/MainButtonDemo";
-import BackButtonDemo from "../../entities/telegram/ui/BackButtonDemo";
-import ShowPopupDemo from "../../entities/telegram/ui/ShowPopupDemo";
-import HapticFeedbackDemo from "../../entities/telegram/ui/HapticFeedbackDemo";
-import ScanQrPopupDemo from "../../entities/telegram/ui/ScanQrPopupDemo";
-import ExpandDemo from "../../entities/telegram/ui/ExpandDemo";
-import useBetaVersion from "../../entities/telegram/model/hooks/useBetaVersion";
-import { ethers, JsonRpcProvider, Wallet } from "ethers";
+import useBetaVersion from 'entities/telegram/model/hooks/useBetaVersion';
+import BackButtonDemo from 'entities/telegram/ui/BackButtonDemo';
+import ScanQrPopupDemo from 'entities/telegram/ui/ScanQrPopupDemo';
+import ExpandDemo from 'entities/telegram/ui/ExpandDemo';
+import HapticFeedbackDemo from 'entities/telegram/ui/HapticFeedbackDemo';
+import MainButtonDemo from 'entities/telegram/ui/MainButtonDemo';
+import ShowPopupDemo from 'entities/telegram/ui/ShowPopupDemo';
 
-const rpcURL = "https://polygon-amoy.drpc.org";
+const rpcURL = 'https://polygon-amoy.drpc.org';
 const rpc = new JsonRpcProvider(rpcURL);
-const walletKeyCloud = "wallet_backup";
+const walletKeyCloud = 'wallet_backup';
 
 export const HomePage = () => {
   const [colorScheme, themeParams] = useThemeParams();
@@ -72,10 +65,7 @@ export const HomePage = () => {
         theme={
           themeParams.text_color
             ? {
-                algorithm:
-                  colorScheme === "dark"
-                    ? theme.darkAlgorithm
-                    : theme.defaultAlgorithm,
+                algorithm: colorScheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
                 token: {
                   colorText: themeParams.text_color,
                   colorPrimary: themeParams.button_color,
@@ -85,15 +75,7 @@ export const HomePage = () => {
             : undefined
         }
       >
-        <header className="App-header">
-          <img
-            onClick={handleRequestBeta}
-            src={logo}
-            className="App-logo"
-            alt="logo"
-          />
-        </header>
-        <div>
+        <div className="bg-black">
           <p className="white">{wallet?.address}</p>
           <p className="white">expand</p>
           <p className="white">{expand}</p>
@@ -106,9 +88,7 @@ export const HomePage = () => {
           {isBetaVersion && (
             <div className="betaVersion">
               <h3>WARNING: BETA VERSION</h3>
-              <button onClick={() => setActiveBtn((state) => !state)}>
-                change button
-              </button>
+              <button onClick={() => setActiveBtn((state) => !state)}>change button</button>
               {/* <button onClick={onChangeTransition}>change </button> */}
             </div>
           )}
@@ -117,7 +97,7 @@ export const HomePage = () => {
             <MainButtonDemo
               initialValues={{
                 show: isBetaVersion,
-                text: "SECOND BUTTON",
+                text: 'SECOND BUTTON',
                 progress: true,
               }}
               key="1"

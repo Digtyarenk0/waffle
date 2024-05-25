@@ -1,6 +1,6 @@
+import { BackButton, useShowPopup } from '@vkruglikov/react-telegram-web-app';
 import { Button, Form, Typography } from 'antd';
 import { FC, useState } from 'react';
-import { BackButton, useShowPopup } from '@vkruglikov/react-telegram-web-app';
 
 const BackButtonDemo: FC = () => {
   const [buttonState, setButtonState] = useState<{
@@ -11,12 +11,7 @@ const BackButtonDemo: FC = () => {
   return (
     <>
       <Typography.Title level={3}>BackButton</Typography.Title>
-      <Form
-        labelCol={{ span: 6 }}
-        name="BackButtonDemo"
-        layout="horizontal"
-        autoComplete="off"
-      >
+      <Form labelCol={{ span: 6 }} name="BackButtonDemo" layout="horizontal" autoComplete="off">
         <Form.Item>
           <Button
             block

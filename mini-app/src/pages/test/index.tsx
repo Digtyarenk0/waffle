@@ -1,31 +1,31 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { DispatchWithoutAction, FC, useEffect, useState } from "react";
-import ReactDOM from "react-dom/client";
 import {
   useCloudStorage,
   useExpand,
   useInitData,
   useThemeParams,
   WebAppProvider,
-} from "@vkruglikov/react-telegram-web-app";
-import { ConfigProvider, theme } from "antd";
-import "antd/dist/reset.css";
+} from '@vkruglikov/react-telegram-web-app';
+import { ConfigProvider, theme } from 'antd';
+import { ethers, JsonRpcProvider, Wallet } from 'ethers';
+import React, { DispatchWithoutAction, FC, useEffect, useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import 'antd/dist/reset.css';
 
-import "./index.css";
-import logo from "./logo.svg";
+import './index.css';
+import useBetaVersion from '../../entities/telegram/model/hooks/useBetaVersion';
+import BackButtonDemo from '../../entities/telegram/ui/BackButtonDemo';
+import ExpandDemo from '../../entities/telegram/ui/ExpandDemo';
+import HapticFeedbackDemo from '../../entities/telegram/ui/HapticFeedbackDemo';
+import MainButtonDemo from '../../entities/telegram/ui/MainButtonDemo';
+import ScanQrPopupDemo from '../../entities/telegram/ui/ScanQrPopupDemo';
+import ShowPopupDemo from '../../entities/telegram/ui/ShowPopupDemo';
 
-import MainButtonDemo from "../../entities/telegram/ui/MainButtonDemo";
-import BackButtonDemo from "../../entities/telegram/ui/BackButtonDemo";
-import ShowPopupDemo from "../../entities/telegram/ui/ShowPopupDemo";
-import HapticFeedbackDemo from "../../entities/telegram/ui/HapticFeedbackDemo";
-import ScanQrPopupDemo from "../../entities/telegram/ui/ScanQrPopupDemo";
-import ExpandDemo from "../../entities/telegram/ui/ExpandDemo";
-import useBetaVersion from "../../entities/telegram/model/hooks/useBetaVersion";
-import { ethers, JsonRpcProvider, Wallet } from "ethers";
+import logo from './logo.svg';
 
-const rpcURL = "https://polygon-amoy.drpc.org";
+const rpcURL = 'https://polygon-amoy.drpc.org';
 const rpc = new JsonRpcProvider(rpcURL);
-const walletKeyCloud = "wallet_backup";
+const walletKeyCloud = 'wallet_backup';
 
 export const TestPage: FC<{
   onChangeTransition: DispatchWithoutAction;
@@ -77,10 +77,7 @@ export const TestPage: FC<{
         theme={
           themeParams.text_color
             ? {
-                algorithm:
-                  colorScheme === "dark"
-                    ? theme.darkAlgorithm
-                    : theme.defaultAlgorithm,
+                algorithm: colorScheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
                 token: {
                   colorText: themeParams.text_color,
                   colorPrimary: themeParams.button_color,
@@ -91,12 +88,7 @@ export const TestPage: FC<{
         }
       >
         <header className="App-header">
-          <img
-            onClick={handleRequestBeta}
-            src={logo}
-            className="App-logo"
-            alt="logo"
-          />
+          <img onClick={handleRequestBeta} src={logo} className="App-logo" alt="logo" />
         </header>
         <div>
           <p className="white">{wallet?.address}</p>
@@ -111,9 +103,7 @@ export const TestPage: FC<{
           {isBetaVersion && (
             <div className="betaVersion">
               <h3>WARNING: BETA VERSION</h3>
-              <button onClick={() => setActiveBtn((state) => !state)}>
-                change button
-              </button>
+              <button onClick={() => setActiveBtn((state) => !state)}>change button</button>
               <button onClick={onChangeTransition}>change </button>
             </div>
           )}
@@ -122,7 +112,7 @@ export const TestPage: FC<{
             <MainButtonDemo
               initialValues={{
                 show: isBetaVersion,
-                text: "SECOND BUTTON",
+                text: 'SECOND BUTTON',
                 progress: true,
               }}
               key="1"
