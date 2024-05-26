@@ -49,6 +49,8 @@ module.exports = {
         //dev
         '@typescript-eslint/no-explicit-any': 0,
         'no-console': 0,
+        'react-hooks/rules-of-hooks': 'warn',
+        'react-hooks/exhaustive-deps': 'warn',
         //
         'no-debugger': 'warn',
         'prettier/prettier': ['error', {}, { usePrettierrc: true }], // Use our .prettierrc file as source

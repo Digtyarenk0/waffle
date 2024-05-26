@@ -5,11 +5,11 @@ const bot = new TelegramBot(process.env.TELEGRAM_BOT_KEY, { polling: true });
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  const url = "https://react-telegram-web-app.domain:3000";
+  const url = "";
   const opts = {
     reply_markup: {
-      inline_keyboard: [[{ text: "Open Mini App", url: url }]],
+      inline_keyboard: [[{ text: "Wallet" }]],
     },
   };
-  bot.sendMessage(chatId, "Нажмите кнопку ниже для открытия Mini App:", opts);
+  bot.sendMessage(chatId, "Open the wallet to the left of the keyboard");
 });
