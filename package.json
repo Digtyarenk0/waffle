@@ -1,5 +1,5 @@
 {
-  "name": "azen_telegram_bot_server",
+  "name": "gale_pocket_wallet_bot_server",
   "version": "0.1",
   "description": "server_side",
   "main": "index.js",
