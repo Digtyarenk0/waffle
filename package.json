@@ -7,9 +7,12 @@
   "author": "Digtyarenk0 <uhmeplay811@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon server"
+    "build": "cd mini-app && yarn install",
+    "start": "concurrently \"nodemon server\" \"cd mini-app && yarn start\"",
+    "prod": "concurrently \"nodemon server\" \"cd mini-app && serve -s build\""
   },
   "dependencies": {
+    "concurrently": "^8.2.2",
     "dotenv": "^16.4.5",
     "node-telegram-bot-api": "^0.66.0",
     "nodemon": "^3.1.1"
