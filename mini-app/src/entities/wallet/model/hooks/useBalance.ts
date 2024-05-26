@@ -3,14 +3,14 @@ import { useState, useEffect } from 'react';
 
 import { weiToAmount } from 'shared/utils/amount';
 
-export const useNativBalance = (wallet?: ethers.Wallet) => {
+export const useNativBalance = (provider?: ethers.Provider, address?: string) => {
   const [balance, setBalance] = useState<string>('-');
 
   useEffect(() => {
-    if (wallet) {
-      wallet.provider?.getBalance(wallet.address).then((i) => setBalance(weiToAmount(i.toString(), 18).toString()));
+    if (provider && address) {
+      provider?.getBalance(address).then((i) => setBalance(weiToAmount(i.toString(), 18).toString()));
     }
-  }, [wallet]);
+  }, [provider]);
 
   return balance;
 };

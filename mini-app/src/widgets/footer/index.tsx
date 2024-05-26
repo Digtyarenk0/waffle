@@ -1,10 +1,15 @@
 import classNames from 'classnames';
-import { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { HiWallet } from 'react-icons/hi2';
 import { TbProgressHelp } from 'react-icons/tb';
 import { NavLink } from 'react-router-dom';
 
 import { routes } from 'shared/constants/routes';
+import { weiToAmount } from 'shared/utils/amount';
+
+import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStore';
+import { useInitWallet } from 'entities/wallet/model/hooks/useInitWalletApp';
+import { updateBalance } from 'entities/wallet/model/store';
 
 interface FooterBtnProps {
   ico: ReactElement;
@@ -29,6 +34,19 @@ const FooterBtn = ({ text, ico, route, className }: FooterBtnProps) => (
 );
 
 export const Footer = () => {
+  const wallet = useTypedSelector((s) => s.wallet);
+  const dispatch = useTypedDispatch();
+
+  useInitWallet();
+
+  useEffect(() => {
+    if (wallet.provider && wallet.address) {
+      wallet.provider
+        ?.getBalance(wallet.address)
+        .then((i) => dispatch(updateBalance(weiToAmount(i.toString(), 18).toString())));
+    }
+  }, [wallet.address]);
+
   return (
     <div className="grid grid-cols-3 grid-rows-1 w-full absolute bottom-0">
       <FooterBtn
