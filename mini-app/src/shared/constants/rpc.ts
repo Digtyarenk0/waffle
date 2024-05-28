@@ -1,9 +1,9 @@
-import { JsonRpcProvider } from 'ethers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 
-import { SupportedChainId } from '../types/chain';
+import { SupportedChainId } from '../../entities/wallet/model/types/chain';
 
 export const RPC_URLS: { [key in SupportedChainId]: string } = {
-  [SupportedChainId.AMOY]: 'https://rpc.ankr.com/polygon_amoy',
+  [SupportedChainId.AMOY]: 'https://polygon.meowrpc.com',
 };
 
 export const RPC_PROVIDERS: { [key in SupportedChainId]: JsonRpcProvider } = {

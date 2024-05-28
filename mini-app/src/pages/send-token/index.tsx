@@ -6,7 +6,8 @@ import { useForm } from 'react-hook-form';
 import { TransactionInfoBlock } from 'shared/ui/transaction-info';
 import { amountToWei, weiToAmount } from 'shared/utils/amount';
 
-import { useWallet } from 'entities/wallet/model/hooks/useSelectWalletApp';
+import { useWalletApp } from 'entities/wallet/model/context';
+import { useNativBalance } from 'entities/wallet/model/hooks/useBalance';
 
 import { Header } from 'widgets/header';
 
@@ -21,7 +22,8 @@ interface TxData {
 }
 
 export const SendToken = () => {
-  const wallet = useWallet();
+  const wallet = useWalletApp();
+  const nativBalance = useNativBalance();
 
   const [txData, setTxData] = useState<TxData>();
   const [isTxLoading, setTxLoading] = useState(false);
@@ -48,7 +50,8 @@ export const SendToken = () => {
         const receipt = await tx?.wait();
         if (receipt) {
           const gasUsed = receipt.gasUsed;
-          const gasPrice = receipt.gasPrice;
+          // @ts-ignore
+          const gasPrice = receipt?.gasPrice || '0';
           const totalGasCost = BigNumber.from(gasUsed).mul(gasPrice);
           setTxData({
             hash: tx.hash,
@@ -85,7 +88,7 @@ export const SendToken = () => {
             <p className="text-gray-main font-semibold mb-2">Sending MATIC:</p>
             <input
               className="p-2 text-xs text-white-main h-8 w-[330px] bg-transparent autofill:!bg-transparent border-[1px] rounded-sm border-gray-main"
-              {...register('amount', { max: Number(wallet.balance || 0), min: 0.0001, required: true })}
+              {...register('amount', { max: Number(nativBalance || 0), min: 0.0001, required: true })}
             />
           </div>
           <TransactionInfoBlock hash={txData?.hash} gasUsed={txData?.gasUsed} />
