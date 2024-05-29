@@ -31,10 +31,10 @@ interface UniTokensListResponse {
 }
 
 export const fetchUniswapTokenList = createApi({
-  reducerPath: 'fetchUniswapTokenList',
+  reducerPath: 'fetchUniswapTokensList',
   baseQuery: fetchBaseQuery({ baseUrl: UNISWAP_TOKENS_LIST_URL }),
   endpoints: (builder) => ({
-    fetchTokensList: builder.query<UniIpfsToken[], number>({
+    fetchUniswapTokensList: builder.query<UniIpfsToken[], number>({
       query: () => ({
         url: '',
       }),
@@ -46,4 +46,5 @@ export const fetchUniswapTokenList = createApi({
     }),
   }),
 });
-export const { useFetchTokensListQuery } = fetchUniswapTokenList;
+
+export const { useFetchUniswapTokensListQuery } = fetchUniswapTokenList;

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { IoIosSend } from 'react-icons/io';
 // import { LuMoreVertical } from 'react-icons/lu';
 // import { MdOutlineCallReceived, MdOutlineSwapCalls } from 'react-icons/md';
@@ -8,7 +8,7 @@ import { routes } from 'shared/constants/routes';
 import { ButtonRound } from 'shared/ui/button-round';
 import { weiToAmount } from 'shared/utils/amount';
 
-import { useTokensBalance } from 'entities/web3/model/hooks/tokens/useTokensBalance';
+import { useTypedSelector } from 'entities/store/model/useStore';
 
 import { Header } from 'widgets/header';
 
@@ -19,7 +19,7 @@ interface TokenItem {
   balance?: string;
 }
 
-const TokenItem = (props: TokenItem) => (
+const TokenItem = memo((props: TokenItem) => (
   <div className="flex items-center">
     <img className="w-7 h-7 m-1 mr-3" src={props.logoURI} alt="" />
     <div>
@@ -27,11 +27,10 @@ const TokenItem = (props: TokenItem) => (
       <p>{`${props.balance} ${props.symbol}`}</p>
     </div>
   </div>
-);
+));
 
 export const HomePage = () => {
-  const tokensWithBalance = useTokensBalance();
-  console.log({ tokensWithBalance });
+  const tokensWithBalance = useTypedSelector((s) => s.tokens.tokens);
 
   const tokens = useMemo(() => {
     return tokensWithBalance?.map((t) => (
@@ -39,7 +38,7 @@ export const HomePage = () => {
         name={t.name}
         symbol={t.symbol}
         balance={weiToAmount(t.balanceWei, t.decimals || 18).toString()}
-        logoURI={t.logoURI}
+        logoURI={t.logo}
         key={t.address}
       />
     ));

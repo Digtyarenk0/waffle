@@ -1,12 +1,12 @@
 import { BigNumber } from 'ethers';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
+import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
+import { useSingleCallMethod } from 'entities/web3/model/hooks/useCallContract';
+import { useERC20Contract, useMulticallContract } from 'entities/web3/model/hooks/useContract';
 
-import { useFetchTokensListQuery } from 'features/tokens/model/hooks/useGetTokens';
-
-import { useSingleCallMethod } from '../useCallContract';
-import { useERC20Contract, useMulticallContract } from '../useContract';
+import { ITokenList, updateTokens } from '../store';
 
 const gasLimit = 1000000;
 
@@ -15,9 +15,11 @@ interface MulticallBalancesResult {
   returnData: { returnData: string }[];
 }
 
-export const useTokensBalance = () => {
-  const { provider, chainId, account } = useWalletApp();
-  const tokens = useFetchTokensListQuery(chainId).data;
+export const useFetchTokensBalance = () => {
+  const dispatch = useTypedDispatch();
+  const tokensList = useTypedSelector((s) => s.tokens.list);
+
+  const { provider, account } = useWalletApp();
 
   const erc20 = useERC20Contract('0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174');
   const multicallContract = useMulticallContract();
@@ -28,22 +30,23 @@ export const useTokensBalance = () => {
   );
   const calls = useMemo(
     () =>
-      !tokens
+      !tokensList
         ? []
-        : tokens.map((t) => ({
+        : tokensList.map((t) => ({
             target: t.address,
             callData,
             gasLimit,
           })),
-    [tokens?.length],
+    [tokensList?.length],
   );
 
   const disabled = useMemo(
-    () => !provider || !multicallContract || !erc20 || !tokens || !account,
-    [provider, multicallContract, erc20, tokens, account],
+    () => !provider || !multicallContract || !erc20 || !tokensList || !account,
+    [provider, multicallContract, erc20, tokensList, account],
   );
 
   const multicallRes = useSingleCallMethod(multicallContract, 'multicall', [calls], {
+    depBlock: true,
     disabled,
   }).result as MulticallBalancesResult | undefined;
 
@@ -54,12 +57,23 @@ export const useTokensBalance = () => {
     );
   }, [multicallRes?.returnData, disabled]);
 
-  return useMemo(
+  const tokens = useMemo(
     () =>
-      result?.map((b, i) => ({
-        ...tokens?.[i],
-        balanceWei: b?.toString(),
-      })),
-    [result, tokens],
+      result?.map((b, i) => {
+        const token = tokensList?.[i] as ITokenList;
+        return {
+          ...token,
+          balanceWei: b.toString(),
+        };
+      }),
+    [result, tokensList?.length],
   );
+
+  useEffect(() => {
+    if (tokens) {
+      dispatch(updateTokens(tokens));
+    }
+  }, [tokens]);
+
+  return;
 };

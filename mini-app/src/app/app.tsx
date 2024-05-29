@@ -6,6 +6,7 @@ import { routes } from 'shared/constants/routes';
 
 import { store } from 'entities/store/model';
 import { WalletAppContextProvider } from 'entities/wallet/model/context';
+import { BlockContextProvider } from 'entities/web3/model/context/block-context';
 
 import { ErrorBoundary } from 'widgets/error-boundary/ui';
 import { Footer } from 'widgets/footer';
@@ -25,28 +26,30 @@ export const App = () => {
       <TelegramWebProvider>
         <TelegramThemeProvider>
           <WalletAppContextProvider>
-            <Provider store={store}>
-              <BrowserRouter>
-                <div className="w-full h-[100vh] relative overflow-hidden bg-black-theme">
-                  <Routes>
-                    <Route path={routes.main} element={<HomePage />} />
-                    <Route path={routes.send} element={<SendToken />} />
-                    <Route path="*" element={<Navigate to={routes.main} replace />} />
-                  </Routes>
-                  <Footer />
-                  <ToastContainer
-                    position="top-right"
-                    autoClose={4000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    pauseOnFocusLoss
-                    draggable
-                    theme="dark"
-                  />
-                </div>
-              </BrowserRouter>
-            </Provider>
+            <BlockContextProvider>
+              <Provider store={store}>
+                <BrowserRouter>
+                  <div className="w-full h-[100vh] relative overflow-hidden bg-black-theme">
+                    <Routes>
+                      <Route path={routes.main} element={<HomePage />} />
+                      <Route path={routes.send} element={<SendToken />} />
+                      <Route path="*" element={<Navigate to={routes.main} replace />} />
+                    </Routes>
+                    <Footer />
+                    <ToastContainer
+                      position="top-right"
+                      autoClose={4000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      pauseOnFocusLoss
+                      draggable
+                      theme="dark"
+                    />
+                  </div>
+                </BrowserRouter>
+              </Provider>
+            </BlockContextProvider>
           </WalletAppContextProvider>
         </TelegramThemeProvider>
       </TelegramWebProvider>

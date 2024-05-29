@@ -10,6 +10,8 @@ import { useWalletApp } from 'entities/wallet/model/context';
 
 import { ContractMethodsType, MethodParametersType, MethodReturnType } from '../types/contracts';
 
+import { useCallDeps } from './useCallDeps';
+
 interface Option<T> {
   depBlock?: boolean; // Update information with each new block
   defaultValue?: T; // The default value to be returned during a request or after an error
@@ -54,7 +56,7 @@ export const useSingleCallMethod = <
   const [loading, setLoading] = useState<boolean>(false);
 
   const [error, setError] = useState<Error | null>(null);
-  //   const blockDeps = useCallDeps();
+  const blockDeps = useCallDeps();
 
   const setLoadingState = useCallback((value: boolean) => {
     setLoading(value);
@@ -104,7 +106,7 @@ export const useSingleCallMethod = <
       stale.value = true;
       if (loading) setLoadingState(false);
     };
-  }, [depBlock, contract, methodName, JSON.stringify(inputs), disabled, chainId, ...extraDeps]);
+  }, [depBlock && blockDeps, contract, methodName, JSON.stringify(inputs), disabled, chainId, ...extraDeps]);
 
   const freshLoading = loading || loadingRef.current;
   return useMemo(

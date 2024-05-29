@@ -6,6 +6,9 @@ import { NavLink } from 'react-router-dom';
 
 import { routes } from 'shared/constants/routes';
 
+import { useFetchTokensLists } from 'features/tokens/model/hooks/useTokenList';
+import { useFetchTokensBalance } from 'features/tokens/model/hooks/useTokensBalance';
+
 interface FooterBtnProps {
   ico: ReactElement;
   text: string;
@@ -29,6 +32,9 @@ const FooterBtn = ({ text, ico, route, className }: FooterBtnProps) => (
 );
 
 export const Footer = () => {
+  useFetchTokensLists();
+  useFetchTokensBalance();
+
   return (
     <div className="grid grid-cols-3 grid-rows-1 w-full absolute bottom-0">
       <FooterBtn
