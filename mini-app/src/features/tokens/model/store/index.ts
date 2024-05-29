@@ -13,7 +13,7 @@ export interface IToken extends ITokenList {
   balanceWei: string; // user balance amount
 }
 
-interface TokensState {
+export interface TokensState {
   list?: ITokenList[];
   tokens?: IToken[];
 }

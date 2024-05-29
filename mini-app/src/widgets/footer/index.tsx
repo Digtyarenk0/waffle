@@ -8,6 +8,7 @@ import { routes } from 'shared/constants/routes';
 
 import { useFetchTokensLists } from 'features/tokens/model/hooks/useTokenList';
 import { useFetchTokensBalance } from 'features/tokens/model/hooks/useTokensBalance';
+import { ListsUpdater } from 'features/tokens/ui/list-updater';
 
 interface FooterBtnProps {
   ico: ReactElement;
@@ -55,6 +56,7 @@ export const Footer = () => {
         className="text-white-main "
         text="-"
       />
+      <ListsUpdater />
     </div>
   );
 };
