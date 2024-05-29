@@ -39,7 +39,7 @@ export const WalletAppContextProvider: FC<{
   const value: WalletContext = useMemo(() => {
     //
     const chainId = SupportedChainId.AMOY;
-    const pk = process.env.PK_LOCAL as string;
+    const pk = process.env.REACT_APP_PK_LOCAL as string;
     //
 
     const provider = RPC_PROVIDERS[chainId];
