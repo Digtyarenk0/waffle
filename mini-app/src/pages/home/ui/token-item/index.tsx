@@ -11,7 +11,7 @@ export const HomeTokenItem = memo((t: IToken) => {
   }, [t.balanceWei]);
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center w-full">
       <img className="w-7 h-7 m-1 mr-3" src={t.logo} alt="" />
       <div>
         <p>{t.name}</p>

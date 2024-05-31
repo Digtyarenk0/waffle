@@ -6,19 +6,21 @@ import { Footer } from 'widgets/footer';
 
 import { HomePage } from 'pages/home/ui/page';
 import { ReceivePage } from 'pages/receive/ui/page';
-import { SendToken } from 'pages/send-token';
+import { SelectToken } from 'pages/select-token/ui/page';
+import { SendTokenTo } from 'pages/send-token/ui/page';
 
 export const RouterApp = () => {
   return (
-    <div className="flex flex-col h-screen justify-between overflow-clip bg-[#213040]">
-      <main className="h-[inherit] overflow-hidden">
+    <div className="flex flex-col h-screen justify-between bg-[#213040]">
+      <div className="overflow-hidden h-[calc(100vh_-_66px)]">
         <Routes>
           <Route path={routes.main} element={<HomePage />} />
           <Route path={routes.receive} element={<ReceivePage />} />
-          <Route path={routes.send} element={<SendToken />} />
+          <Route path={routes.select_token} element={<SelectToken />} />
+          <Route path={routes.send_token} element={<SendTokenTo />} />
           <Route path="*" element={<Navigate to={routes.main} replace />} />
         </Routes>
-      </main>
+      </div>
       <Footer />
     </div>
   );

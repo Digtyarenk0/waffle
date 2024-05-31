@@ -6,6 +6,7 @@ import { useWalletApp } from 'entities/wallet/model/context';
 import { useFetchUniswapTokensListQuery } from 'features/tokens/model/hooks/useGetTokens';
 
 import { getUniqueListBy } from '../helper';
+import { TESTNENT_TOKENS_LIST } from '../helper/testnet-list';
 import { updateTokenList } from '../store';
 
 export const useFetchTokensLists = () => {
@@ -15,7 +16,7 @@ export const useFetchTokensLists = () => {
   const uniTokensList = useFetchUniswapTokensListQuery(chainId).data || [];
 
   const tokensList = useMemo(() => {
-    const tokens = [...uniTokensList].map((t) => ({
+    const tokens = [...uniTokensList, ...Object.values(TESTNENT_TOKENS_LIST[chainId])].map((t) => ({
       name: t.name,
       symbol: t.symbol,
       logo: t.logoURI,
@@ -23,7 +24,7 @@ export const useFetchTokensLists = () => {
       address: t.address,
     }));
     return getUniqueListBy([...tokens], 'symbol');
-  }, [uniTokensList?.length]);
+  }, [uniTokensList?.length, chainId]);
 
   useEffect(() => {
     if (tokensList?.length) {

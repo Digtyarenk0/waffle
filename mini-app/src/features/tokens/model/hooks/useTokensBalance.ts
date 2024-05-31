@@ -41,8 +41,8 @@ export const useFetchTokensBalance = () => {
   );
 
   const disabled = useMemo(
-    () => !provider || !multicallContract || !erc20 || !tokensList || !account,
-    [provider, multicallContract, erc20, tokensList, account],
+    () => !provider || !multicallContract || !erc20 || !tokensList || !account || calls.length === 0,
+    [provider, multicallContract, erc20, tokensList, account, calls.length],
   );
 
   const multicallRes = useSingleCallMethod(multicallContract, 'multicall', [calls], {

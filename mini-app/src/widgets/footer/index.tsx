@@ -17,7 +17,7 @@ interface FooterBtnProps {
   className?: string;
 }
 
-const style = 'p-3 text-center font-semibold transition-all border-t-2 border-gray-main';
+const style = 'p-2 text-center font-medium transition-all border-t-[1px] border-gray-main';
 
 const FooterBtn = ({ text, ico, route, className }: FooterBtnProps) => (
   <NavLink

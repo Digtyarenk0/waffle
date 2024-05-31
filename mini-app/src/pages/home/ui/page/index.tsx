@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { IoIosSend } from 'react-icons/io';
-// import { LuMoreVertical } from 'react-icons/lu';
 import { MdOutlineCallReceived } from 'react-icons/md';
 import { TbProgressHelp } from 'react-icons/tb';
 
@@ -21,13 +20,13 @@ export const HomePage = () => {
   }, [tokensWithBalance]);
 
   return (
-    <div className="flex flex-col h-screen w-screen justify-between overflow-clip">
-      <div className="h-36">
+    <div className="h-full overflow-y-scroll">
+      <div className="h-40">
         <Header />
         <div className="grid grid-cols-4 grid-rows-1 mt-3">
           <ButtonRound
             ico={<IoIosSend size="25px" className="absolute -mb-[0.5px] -ml-[0.5px]" />}
-            route={routes.send}
+            route={routes.select_token}
             text="Send"
           />
           <ButtonRound ico={<MdOutlineCallReceived size="25px" />} route={routes.receive} text="Recive" />
@@ -38,7 +37,7 @@ export const HomePage = () => {
         <ButtonRound ico={<LuMoreVertical size="25px" />} route="" text="More" /> */}
         </div>
       </div>
-      <div className="mt-6 pl-4 bg-slate-900 max-h-fit overflow-scroll">{tokens}</div>
+      <div className="mt-2 pl-4">{tokens}</div>
     </div>
   );
 };
