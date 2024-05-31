@@ -1,12 +1,17 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { SearchBar } from 'shared/ui/search';
 import { TransactionInfoBlock } from 'shared/ui/transaction-info';
 import { amountToWei, weiToAmount } from 'shared/utils/amount';
 
-import { useWallet } from 'entities/wallet/model/hooks/useSelectWalletApp';
+import { useTypedSelector } from 'entities/store/model/useStore';
+import { useWalletApp } from 'entities/wallet/model/context';
+import { useNativBalance } from 'entities/wallet/model/hooks/useBalance';
+
+import { IToken } from 'features/tokens/model/store';
 
 import { Header } from 'widgets/header';
 
@@ -20,10 +25,25 @@ interface TxData {
   hash: string;
 }
 
+const TokenItem = memo((t: IToken) => {
+  return (
+    <div className="flex items-center">
+      <img className="w-5 h-5 m-1 mr-3" src={t.logo} alt="" />
+      <div>
+        <p>{t.name}</p>
+        <p>{`${weiToAmount(t.balanceWei || 0, t.decimals || 18).toFixed(7)} ${t.symbol}`}</p>
+      </div>
+    </div>
+  );
+});
+
 export const SendToken = () => {
-  const wallet = useWallet();
+  const wallet = useWalletApp();
+  const nativBalance = useNativBalance();
+  const tokens = useTypedSelector((s) => s.tokens.tokens);
 
   const [txData, setTxData] = useState<TxData>();
+  const [selectedToken, setSelectedToken] = useState<IToken>();
   const [isTxLoading, setTxLoading] = useState(false);
   const [txErr, setTxErr] = useState<any>();
 
@@ -48,7 +68,8 @@ export const SendToken = () => {
         const receipt = await tx?.wait();
         if (receipt) {
           const gasUsed = receipt.gasUsed;
-          const gasPrice = receipt.gasPrice;
+          // @ts-ignore
+          const gasPrice = receipt?.gasPrice || '0';
           const totalGasCost = BigNumber.from(gasUsed).mul(gasPrice);
           setTxData({
             hash: tx.hash,
@@ -75,6 +96,11 @@ export const SendToken = () => {
       <form className="px-3" onSubmit={handleSubmit(onSubmit)}>
         <div className="h-[58vh] overflow-scroll">
           <div className="mt-4">
+            <p className="text-gray-main font-semibold mb-2">Select token:</p>
+            <SearchBar setSelected={setSelectedToken} tokens={tokens || []} />
+            {selectedToken && <TokenItem {...selectedToken} />}
+          </div>
+          <div className="mt-4">
             <p className="text-gray-main font-semibold mb-2">Address of the recipient:</p>
             <input
               className="p-2 text-xs text-white-main h-8 w-[330px] bg-transparent autofill:!bg-transparent border-[1px] rounded-sm border-gray-main"
@@ -85,7 +111,7 @@ export const SendToken = () => {
             <p className="text-gray-main font-semibold mb-2">Sending MATIC:</p>
             <input
               className="p-2 text-xs text-white-main h-8 w-[330px] bg-transparent autofill:!bg-transparent border-[1px] rounded-sm border-gray-main"
-              {...register('amount', { max: Number(wallet.balance || 0), min: 0.0001, required: true })}
+              {...register('amount', { max: Number(nativBalance || 0), min: 0.0001, required: true })}
             />
           </div>
           <TransactionInfoBlock hash={txData?.hash} gasUsed={txData?.gasUsed} />

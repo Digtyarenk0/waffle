@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { copyToClipboard } from 'shared/utils/copy-to-clipboard';
 
-export const useClipboard = (val: string) => {
+export const useClipboard = (val: string, t = 550) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const copy = useCallback(() => {
@@ -12,7 +12,7 @@ export const useClipboard = (val: string) => {
 
   useEffect(() => {
     if (isCopied) {
-      setTimeout(() => setIsCopied(false), 550);
+      setTimeout(() => setIsCopied(false), t);
     }
   }, [isCopied]);
 

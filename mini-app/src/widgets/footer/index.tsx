@@ -1,15 +1,14 @@
 import classNames from 'classnames';
-import { ReactElement, useEffect } from 'react';
+import { ReactElement } from 'react';
 import { HiWallet } from 'react-icons/hi2';
 import { TbProgressHelp } from 'react-icons/tb';
 import { NavLink } from 'react-router-dom';
 
 import { routes } from 'shared/constants/routes';
-import { weiToAmount } from 'shared/utils/amount';
 
-import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStore';
-import { useInitWallet } from 'entities/wallet/model/hooks/useInitWalletApp';
-import { updateBalance } from 'entities/wallet/model/store';
+import { useFetchTokensLists } from 'features/tokens/model/hooks/useTokenList';
+import { useFetchTokensBalance } from 'features/tokens/model/hooks/useTokensBalance';
+import { ListsUpdater } from 'features/tokens/ui/list-updater';
 
 interface FooterBtnProps {
   ico: ReactElement;
@@ -34,21 +33,11 @@ const FooterBtn = ({ text, ico, route, className }: FooterBtnProps) => (
 );
 
 export const Footer = () => {
-  const wallet = useTypedSelector((s) => s.wallet);
-  const dispatch = useTypedDispatch();
-
-  useInitWallet();
-
-  useEffect(() => {
-    if (wallet.provider && wallet.address) {
-      wallet.provider
-        ?.getBalance(wallet.address)
-        .then((i) => dispatch(updateBalance(weiToAmount(i.toString(), 18).toString())));
-    }
-  }, [wallet.address]);
+  useFetchTokensLists();
+  useFetchTokensBalance();
 
   return (
-    <div className="grid grid-cols-3 grid-rows-1 w-full absolute bottom-0">
+    <div className="grid grid-cols-3 grid-rows-1 w-full">
       <FooterBtn
         route={routes.main}
         ico={<HiWallet size="25px" className="mx-auto text-green-main" />}
@@ -67,6 +56,7 @@ export const Footer = () => {
         className="text-white-main "
         text="-"
       />
+      <ListsUpdater />
     </div>
   );
 };
