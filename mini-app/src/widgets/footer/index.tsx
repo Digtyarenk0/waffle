@@ -37,7 +37,7 @@ export const Footer = () => {
   useFetchTokensBalance();
 
   return (
-    <div className="grid grid-cols-3 grid-rows-1 w-full absolute bottom-0">
+    <div className="grid grid-cols-3 grid-rows-1 w-full">
       <FooterBtn
         route={routes.main}
         ico={<HiWallet size="25px" className="mx-auto text-green-main" />}

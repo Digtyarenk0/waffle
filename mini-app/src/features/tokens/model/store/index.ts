@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Big from 'big.js';
 
+import { getUniqueListBy } from '../helper';
+
 export interface ITokenList {
   name: string;
   symbol: string;
@@ -24,6 +26,10 @@ export const tokensSlice = createSlice({
   name: 'tokens',
   initialState,
   reducers: {
+    addTokensToList: (state, action: PayloadAction<ITokenList[]>) => {
+      const oldList = state.list || [];
+      state.list = getUniqueListBy([...oldList, ...action.payload], 'symbol');
+    },
     updateTokenList: (state, action: PayloadAction<ITokenList[]>) => {
       state.list = action.payload;
     },
@@ -38,6 +44,6 @@ export const tokensSlice = createSlice({
   },
 });
 
-export const { updateTokens, updateTokenList } = tokensSlice.actions;
+export const { updateTokens, updateTokenList, addTokensToList } = tokensSlice.actions;
 
 export default tokensSlice.reducer;

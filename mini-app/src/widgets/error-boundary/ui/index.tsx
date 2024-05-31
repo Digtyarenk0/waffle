@@ -28,7 +28,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="w-[100wh] h-[100vh]  bg-black-theme">
+        <div className="w-[100wh] h-[100vh]  bg-[#213040]">
           <p className="text-white-main">Ooops!</p>
           <p className="text-white-main">Error, pls reload page</p>
           <button onClick={this.onClickHandler} className="p-5 m-5 bg-slate-600">

@@ -1,4 +1,3 @@
-import { GetState } from '@reduxjs/toolkit';
 import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists';
 import ms from 'ms';
 import { useCallback, useEffect, useMemo } from 'react';
@@ -7,14 +6,13 @@ import useDebounce from 'shared/hooks/useDebounce';
 import useInterval from 'shared/hooks/useInterval';
 import { useIsWindowVisible } from 'shared/hooks/useIsWindowVisible';
 
-import { RootState } from 'entities/store/model';
 import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
 
 import { DEFAULT_LIST_OF_LISTS, UNSUPPORTED_LIST_URLS } from 'features/tokens/model/constants';
 import { useAllLists } from 'features/tokens/model/helper/list-helper';
 import { useFetchListCallback } from 'features/tokens/model/hooks/useFetchListCallback';
-import { ITokenList, updateTokenList } from 'features/tokens/model/store';
+import { addTokensToList, ITokenList } from 'features/tokens/model/store';
 import { acceptListUpdate } from 'features/tokens/model/store/lists';
 
 import TokenSafetyLookupTable from '../../model/helper/token-safety-lookup';
@@ -106,7 +104,7 @@ export const ListsUpdater = (): null => {
   useEffect(() => {
     if (tokensDebounce) {
       console.log('Tokens from all', tokensDebounce.length);
-      // dispatch(updateTokenList(tokensDebounce));
+      dispatch(addTokensToList(tokensDebounce.slice(0, 200)));
     }
   }, [tokensDebounce]);
 

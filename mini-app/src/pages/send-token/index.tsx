@@ -1,13 +1,17 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { SearchBar } from 'shared/ui/search';
 import { TransactionInfoBlock } from 'shared/ui/transaction-info';
 import { amountToWei, weiToAmount } from 'shared/utils/amount';
 
+import { useTypedSelector } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
 import { useNativBalance } from 'entities/wallet/model/hooks/useBalance';
+
+import { IToken } from 'features/tokens/model/store';
 
 import { Header } from 'widgets/header';
 
@@ -21,11 +25,25 @@ interface TxData {
   hash: string;
 }
 
+const TokenItem = memo((t: IToken) => {
+  return (
+    <div className="flex items-center">
+      <img className="w-5 h-5 m-1 mr-3" src={t.logo} alt="" />
+      <div>
+        <p>{t.name}</p>
+        <p>{`${weiToAmount(t.balanceWei || 0, t.decimals || 18).toFixed(7)} ${t.symbol}`}</p>
+      </div>
+    </div>
+  );
+});
+
 export const SendToken = () => {
   const wallet = useWalletApp();
   const nativBalance = useNativBalance();
+  const tokens = useTypedSelector((s) => s.tokens.tokens);
 
   const [txData, setTxData] = useState<TxData>();
+  const [selectedToken, setSelectedToken] = useState<IToken>();
   const [isTxLoading, setTxLoading] = useState(false);
   const [txErr, setTxErr] = useState<any>();
 
@@ -77,6 +95,11 @@ export const SendToken = () => {
       <div className="mt-6 border-t-2 border-gray-main" />
       <form className="px-3" onSubmit={handleSubmit(onSubmit)}>
         <div className="h-[58vh] overflow-scroll">
+          <div className="mt-4">
+            <p className="text-gray-main font-semibold mb-2">Select token:</p>
+            <SearchBar setSelected={setSelectedToken} tokens={tokens || []} />
+            {selectedToken && <TokenItem {...selectedToken} />}
+          </div>
           <div className="mt-4">
             <p className="text-gray-main font-semibold mb-2">Address of the recipient:</p>
             <input
