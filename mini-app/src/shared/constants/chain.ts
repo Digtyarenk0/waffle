@@ -5,7 +5,7 @@ import { RPC_URLS } from './rpc';
 export interface ChainInfo {
   label: string;
   rpcUrls: string[];
-  explorer?: string[];
+  explorer: string[];
   nativeCurrency: {
     name: string; // 'Goerli ETH',
 

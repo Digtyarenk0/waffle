@@ -14,7 +14,7 @@ export const TESTNENT_TOKENS_LIST: { [chainId in SupportedChainId]: token } & {
       address: '0xeBDCbab722f9B4614b7ec1C261c9E52acF109CF8',
       symbol: 'WETH',
       decimals: 18,
-      chainId: 1,
+      chainId: 421614,
       logoURI:
         'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
     } as UniIpfsToken,
@@ -23,7 +23,7 @@ export const TESTNENT_TOKENS_LIST: { [chainId in SupportedChainId]: token } & {
       address: '0x7E4C556b4b0dCa7Cf3709E281c49f9aB07B79Ec3',
       symbol: 'WBTC',
       decimals: 8,
-      chainId: 10,
+      chainId: 421614,
       logoURI:
         'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png',
     } as UniIpfsToken,

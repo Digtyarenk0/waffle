@@ -1,9 +1,13 @@
 import { BigNumber } from 'ethers';
 import { useEffect, useMemo } from 'react';
 
+import useDebounce from 'shared/hooks/useDebounce';
+
 import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
+import { ZERO_ADDRESS } from 'entities/web3/model/constant/adresess';
 import { useSingleCallMethod } from 'entities/web3/model/hooks/useCallContract';
+import { useCallDeps } from 'entities/web3/model/hooks/useCallDeps';
 import { useERC20Contract, useMulticallContract } from 'entities/web3/model/hooks/useContract';
 
 import { ITokenList, updateTokens } from '../store';
@@ -21,23 +25,26 @@ export const useFetchTokensBalance = () => {
 
   const { provider, account } = useWalletApp();
 
-  const erc20 = useERC20Contract('0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174');
+  const blockDeps = useCallDeps();
+  const erc20 = useERC20Contract(ZERO_ADDRESS);
   const multicallContract = useMulticallContract();
 
   const callData = useMemo(
     () => erc20?.interface.encodeFunctionData('balanceOf', [account]),
     [erc20?.interface, account],
   );
+
+  const tokensListDebunce = useDebounce(tokensList, 200).value;
   const calls = useMemo(
     () =>
-      !tokensList
+      !tokensListDebunce
         ? []
-        : tokensList.map((t) => ({
+        : tokensListDebunce.map((t) => ({
             target: t.address,
             callData,
             gasLimit,
           })),
-    [tokensList?.length],
+    [tokensListDebunce?.length, blockDeps],
   );
 
   const disabled = useMemo(
@@ -59,21 +66,25 @@ export const useFetchTokensBalance = () => {
 
   const tokens = useMemo(
     () =>
-      result?.map((b, i) => {
-        const token = tokensList?.[i] as ITokenList;
-        return {
-          ...token,
-          balanceWei: b.toString(),
-        };
-      }),
+      result
+        ?.map((b, i) => {
+          const token = tokensList?.[i] as ITokenList;
+          return {
+            ...token,
+            balanceWei: b.toString(),
+          };
+        })
+        .filter((t) => t.balanceWei !== '0'),
     [result, tokensList?.length],
   );
 
+  const tokensWithBalance = useDebounce(tokens, 150).value;
+
   useEffect(() => {
-    if (tokens) {
-      dispatch(updateTokens(tokens));
+    if (tokensWithBalance) {
+      dispatch(updateTokens(tokensWithBalance));
     }
-  }, [tokens]);
+  }, [tokensWithBalance]);
 
   return;
 };

@@ -9,6 +9,7 @@ import { RETRY_OPTIONS_TRANSACTION } from 'shared/constants/retry-config';
 
 import { useTypedDispatch } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
+import { incTxCount } from 'entities/wallet/model/store';
 import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
 import { GAS_LIMIT_ADDITIONAL, GAS_LIMIT_MULTIPLIER } from '../constant/gasLimit';
@@ -30,7 +31,7 @@ export const useSingleSendMethod = <
   methodName: M,
   options?: UseSingleSendOptions,
 ) => {
-  const { account, chainId } = useWalletApp();
+  const { account, chainId, wallet } = useWalletApp();
   const dispatch = useTypedDispatch();
   const {
     showErrorToast = true,
@@ -38,68 +39,57 @@ export const useSingleSendMethod = <
     gasLimitAdditional = GAS_LIMIT_ADDITIONAL.default,
   } = options || {};
 
-  const marketingOptions = useCallback(
-    (inputs: P, errorData: { transaction_hash?: string; error?: string }) => {
-      if (contract) {
-        return {
-          contract_address: contract.address,
-          method_name: methodName,
-          params: JSON.stringify(inputs),
-          ...errorData,
-        };
-      }
-    },
-    [contract, methodName],
-  );
-
   return useCallback(
     async (...inputs: P): Promise<TransactionState> => {
       if (account) {
-        if (contract && chainId) {
+        if (contract && chainId && wallet) {
           try {
             // Multiply estimateGas by gasLimitMultiplier
-            if (gasLimitMultiplier) {
-              let overrides: Overrides = {};
+            // if (gasLimitMultiplier) {
+            //   let overrides: Overrides = {};
 
-              const estimateGas: BigNumber = (await retry(async (bail) => {
-                try {
-                  return await contract.estimateGas[methodName](...inputs);
-                } catch (e: any) {
-                  if (JSON.stringify(e).includes('allowance')) {
-                    throw e;
-                  } else {
-                    bail(e);
-                  }
-                }
-              }, RETRY_OPTIONS_TRANSACTION)) as BigNumber;
+            //   const estimateGas: BigNumber = (await retry(async (bail) => {
+            //     try {
+            //       return await contract.estimateGas[methodName](...inputs);
+            //     } catch (e: any) {
+            //       if (JSON.stringify(e).includes('allowance')) {
+            //         throw e;
+            //       } else {
+            //         bail(e);
+            //       }
+            //     }
+            //   }, RETRY_OPTIONS_TRANSACTION)) as BigNumber;
 
-              // If Overrides was passed, then we get it to modify the gasLimit
-              if (inputs?.length && isOverrides(inputs[inputs.length - 1])) {
-                overrides = inputs.pop();
-              }
+            //   // If Overrides was passed, then we get it to modify the gasLimit
+            //   if (inputs?.length && isOverrides(inputs[inputs.length - 1])) {
+            //     overrides = inputs.pop();
+            //   }
 
-              const gasLimitModified = Big(estimateGas.toString()).mul(gasLimitMultiplier);
+            //   const gasLimitModified = Big(estimateGas.toString()).mul(gasLimitMultiplier);
 
-              if (gasLimitAdditional) {
-                gasLimitModified.add(gasLimitAdditional);
-              }
+            //   if (gasLimitAdditional) {
+            //     gasLimitModified.add(gasLimitAdditional);
+            //   }
 
-              overrides.gasLimit = gasLimitModified.toFixed(0);
+            //   overrides.gasLimit = gasLimitModified.toFixed(0);
 
-              inputs.push(overrides);
-            }
+            //   inputs.push(overrides);
+            // }
 
-            const tx = await contract.functions[methodName](...inputs);
-            return (
-              tx &&
-              tx.wait().then((data: ContractReceipt) => {
-                // dispatch(incTransactionCount());
-                return {
-                  result: data,
-                  error: null,
-                };
-              })
-            );
+            const data = contract.interface.encodeFunctionData(methodName, inputs);
+            const nonce = await wallet.getTransactionCount();
+            const txData = {
+              to: contract.address,
+              data: data,
+              nonce: nonce,
+            };
+            const tx = await wallet.sendTransaction(txData);
+            const result: ContractReceipt = await tx.wait();
+            dispatch(incTxCount());
+            return {
+              result,
+              error: null,
+            };
           } catch (e: any) {
             console.error('useSingleSendMethod ERROR', methodName, inputs, e);
             const parsedError = parseError(e, chainId);
@@ -120,17 +110,7 @@ export const useSingleSendMethod = <
         error: null,
       };
     },
-    [
-      account,
-      contract,
-      chainId,
-      marketingOptions,
-      gasLimitMultiplier,
-      gasLimitAdditional,
-      showErrorToast,
-      methodName,
-      dispatch,
-    ],
+    [account, contract, chainId, wallet, gasLimitMultiplier, gasLimitAdditional, showErrorToast, methodName, dispatch],
   );
 };
 

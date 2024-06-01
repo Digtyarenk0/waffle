@@ -1,6 +1,7 @@
 import Big from 'big.js';
 import classNames from 'classnames';
-import { useCallback, useMemo } from 'react';
+import { BigNumber } from 'ethers';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiWallet } from 'react-icons/hi2';
 import { useSearchParams } from 'react-router-dom';
@@ -9,13 +10,13 @@ import { routes } from 'shared/constants/routes';
 import { ButtonPastFromBuffer } from 'shared/ui/button-buffer/ui';
 import { Input } from 'shared/ui/input';
 import { maxDecimalsInput } from 'shared/ui/input/model/helper/validators/number';
+import { TransactionInfoBlock } from 'shared/ui/transaction-info';
 import { amountToWei, weiToAmount } from 'shared/utils/amount';
 
 import { useTypedSelector } from 'entities/store/model/useStore';
 import { useERC20Contract } from 'entities/web3/model/hooks/useContract';
 import { useSingleSendMethod } from 'entities/web3/model/hooks/useContractSend';
-
-const isTxLoading = false;
+import { TransactionState } from 'entities/web3/model/types/contracts';
 
 interface Form {
   amount: string;
@@ -28,17 +29,22 @@ export const SendTokenTo = () => {
   const sendToken = useMemo(() => tokens.find((t) => t.address === paramSendToken), [tokens, paramSendToken]);
 
   const tokenContract = useERC20Contract(sendToken?.address);
-  const sendERC20Token = useSingleSendMethod(tokenContract, 'transfer');
+  const transferToken = useSingleSendMethod(tokenContract, 'transfer');
+
+  const [txLoading, setTxLoading] = useState<boolean>(false);
+  const [txResult, setTxResult] = useState<TransactionState>();
 
   const {
-    handleSubmit,
     register,
     setValue,
-    reset,
     trigger,
     watch,
-    formState: { errors, isValid, isDirty },
+    formState: { errors, isValid },
   } = useForm<Form>({
+    defaultValues: {
+      address: '0x5b927c461b71Ce25a74878dBe504492Ab80cbeE4',
+      amount: '0.001',
+    },
     mode: 'all',
   });
 
@@ -89,9 +95,21 @@ export const SendTokenTo = () => {
 
   const handleTransferToken = async () => {
     if (!sendToken?.address || !address || !amount || !tokenContract) return;
-
+    setTxLoading(true);
+    setTxResult(undefined);
     const transferAmount = amountToWei(amount, sendToken.decimals).toString();
-    await sendERC20Token(address, transferAmount);
+    try {
+      const txData = await transferToken(address, transferAmount);
+      console.log('txData:', txData);
+      setTxResult(txData);
+    } catch (error: any) {
+      console.log(error?.message);
+    } finally {
+      setTxLoading(false);
+      setValue('address', '');
+      setValue('amount', '');
+      trigger(['address', 'amount']);
+    }
   };
 
   return (
@@ -141,18 +159,25 @@ export const SendTokenTo = () => {
             </button>
           </div>
         </div>
+        {/* // Data */}
+        <div className="mt-12">
+          <TransactionInfoBlock
+            hash={txResult?.result?.transactionHash}
+            gasUsed={txResult?.result?.gasUsed.toString()}
+          />
+        </div>
       </div>
       <div className="mb-10">
         <button
           className={classNames(
             'w-full h-10 rounded-2xl mt-2',
-            !(!isValid || isTxLoading) ? 'text-black-theme font-semibold bg-green-main' : 'bg-gray-main',
+            !(!isValid || txLoading) ? 'text-black-theme font-semibold bg-green-main' : 'bg-gray-main',
           )}
-          disabled={!isValid || isTxLoading}
+          disabled={!isValid || txLoading}
           onClick={handleTransferToken}
           type="submit"
         >
-          {isTxLoading ? 'Processing' : 'Send'}
+          {txLoading ? 'Processing' : 'Send'}
         </button>
       </div>
     </div>

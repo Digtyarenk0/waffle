@@ -6,10 +6,8 @@ import { useMemo } from 'react';
 import { useWalletApp } from 'entities/wallet/model/context';
 
 import UniswapMulticallABI from '../abis/uniswap-multicall.json';
-import { UNISWAP_MULTICALL_ADDRESSES } from '../constant/adresess';
+import { DEAD_ADDRESS, UNISWAP_MULTICALL_ADDRESSES } from '../constant/adresess';
 import { ERC20, ERC20__factory } from '../contracts/typechain/erc20';
-
-export const DEAD_ADDRESS = '0x000000000000000000000000000000000000dEaD';
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
