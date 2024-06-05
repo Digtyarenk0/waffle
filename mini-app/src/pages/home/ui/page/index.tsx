@@ -15,12 +15,13 @@ import { Header } from 'widgets/header';
 import { HomeTokenItem } from '../token-item';
 
 export const HomePage = () => {
+  const prices = useTypedSelector((s) => s.tokens.prices);
   const tokensWithBalance = useTypedSelector((s) => s.tokens.tokens);
 
   useFeedTokens();
 
   const tokens = useMemo(() => {
-    return tokensWithBalance?.map((t) => <HomeTokenItem {...t} key={t.address} />);
+    return tokensWithBalance?.map((t) => <HomeTokenItem {...t} key={t.address} priceUSD={prices?.[t.address]} />);
   }, [tokensWithBalance]);
 
   return (

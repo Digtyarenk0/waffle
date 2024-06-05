@@ -41,7 +41,8 @@ export function getContract<T extends Contract = Contract>(
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
 
-  return new Contract(address, ABI, getProviderOrSigner(library, account) as any) as T;
+  const provider = getProviderOrSigner(library, account) as any;
+  return new Contract(address, ABI, provider) as T;
 }
 
 export const useContract = <T extends Contract>(

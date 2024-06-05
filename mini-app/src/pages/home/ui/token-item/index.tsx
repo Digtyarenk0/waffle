@@ -3,25 +3,25 @@ import { memo, useMemo } from 'react';
 
 import { weiToAmount } from 'shared/utils/amount';
 
-import { useTypedSelector } from 'entities/store/model/useStore';
-
 import { IToken } from 'features/tokens/model/store';
 
-export const HomeTokenItem = memo((token: IToken) => {
-  const priceUSD = useTypedSelector((s) => s.tokens.prices?.[token.address]);
+interface HomeTokenItem extends IToken {
+  priceUSD?: string;
+}
 
+export const HomeTokenItem = memo((token: HomeTokenItem) => {
   const balance = useMemo(() => {
     if (token.balanceWei === '0') return '0';
     return weiToAmount(token.balanceWei || 0, token.decimals || 18).toFixed(4);
   }, [token.balanceWei]);
 
   const price = useMemo(() => {
-    if (!priceUSD) return;
+    if (!token.priceUSD) return;
     return {
-      cost: Big(priceUSD).toFixed(2),
-      sum: balance !== '0' && Big(priceUSD).mul(balance).toFixed(2),
+      cost: Big(token.priceUSD).toFixed(2),
+      sum: balance !== '0' && Big(token.priceUSD).mul(balance).toFixed(2),
     };
-  }, [priceUSD, balance]);
+  }, [token.priceUSD, balance]);
 
   return (
     <div className="flex items-center w-full">

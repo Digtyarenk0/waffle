@@ -1,7 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { TransactionRequest } from '@ethersproject/providers';
 import retry from 'async-retry';
 import Big from 'big.js';
-import { Contract, ContractReceipt, Overrides } from 'ethers';
+import { Contract, ContractReceipt } from 'ethers';
+import { Deferrable } from 'ethers/lib/utils';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 
@@ -13,6 +15,7 @@ import { incTxCount } from 'entities/wallet/model/store';
 import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
 import { GAS_LIMIT_ADDITIONAL, GAS_LIMIT_MULTIPLIER } from '../constant/gasLimit';
+// import { isOverrides } from '../helper/check-interface';
 import { ContractMethodsType, MethodParametersType, TransactionState } from '../types/contracts';
 
 interface UseSingleSendOptions {
@@ -43,46 +46,43 @@ export const useSingleSendMethod = <
       if (account) {
         if (contract && chainId && wallet) {
           try {
-            // Multiply estimateGas by gasLimitMultiplier
-            // if (gasLimitMultiplier) {
-            //   let overrides: Overrides = {};
-
-            //   const estimateGas: BigNumber = (await retry(async (bail) => {
-            //     try {
-            //       return await contract.estimateGas[methodName](...inputs);
-            //     } catch (e: any) {
-            //       if (JSON.stringify(e).includes('allowance')) {
-            //         throw e;
-            //       } else {
-            //         bail(e);
-            //       }
-            //     }
-            //   }, RETRY_OPTIONS_TRANSACTION)) as BigNumber;
-
-            //   // If Overrides was passed, then we get it to modify the gasLimit
-            //   if (inputs?.length && isOverrides(inputs[inputs.length - 1])) {
-            //     overrides = inputs.pop();
-            //   }
-
-            //   const gasLimitModified = Big(estimateGas.toString()).mul(gasLimitMultiplier);
-
-            //   if (gasLimitAdditional) {
-            //     gasLimitModified.add(gasLimitAdditional);
-            //   }
-
-            //   overrides.gasLimit = gasLimitModified.toFixed(0);
-
-            //   inputs.push(overrides);
-            // }
-
-            const data = contract.interface.encodeFunctionData(methodName, inputs);
-            const nonce = await wallet.getTransactionCount();
-            const txData = {
+            const txData: Deferrable<TransactionRequest> = {
               to: contract.address,
-              data: data,
-              nonce: nonce,
             };
+            // Multiply estimateGas by gasLimitMultiplier
+            if (gasLimitMultiplier) {
+              // let overrides: Overrides = {};
+
+              const gasPrice = await contract.provider.getGasPrice();
+              // Увеличение цены газа на 10%
+              txData.gasPrice = gasPrice.mul(BigNumber.from(110)).div(BigNumber.from(100));
+
+              const estimateGas: BigNumber = (await retry(async (bail) => {
+                try {
+                  return await contract.estimateGas[methodName](...inputs);
+                } catch (e: any) {
+                  if (JSON.stringify(e).includes('allowance')) {
+                    throw e;
+                  } else {
+                    bail(e);
+                  }
+                }
+              }, RETRY_OPTIONS_TRANSACTION)) as BigNumber;
+
+              const gasLimitModified = Big(estimateGas.toString()).mul(gasLimitMultiplier);
+
+              if (gasLimitAdditional) {
+                gasLimitModified.add(gasLimitAdditional);
+              }
+
+              txData.gasLimit = gasLimitModified.toFixed(0);
+            }
+
+            txData.data = contract.interface.encodeFunctionData(methodName, inputs);
+            txData.nonce = await wallet.getTransactionCount();
             const tx = await wallet.sendTransaction(txData);
+            // debugger;
+            // const tx = await contract.functions[methodName](...inputs);
             const result: ContractReceipt = await tx.wait();
             dispatch(incTxCount());
             return {

@@ -53,7 +53,7 @@ export const SendTokenTo = () => {
 
   const [address, amount] = watch(['address', 'amount']);
 
-  const estimatedGas = useContractEstimatedGas(tokenContract, 'transfer', [wallet.account, 0], {
+  const estimatedGas = useContractEstimatedGas(tokenContract, 'transfer', [wallet.account, 1], {
     depBlock: true,
     disabled: !wallet.account || !tokenContract,
   });
