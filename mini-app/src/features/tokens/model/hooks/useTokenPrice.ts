@@ -39,7 +39,7 @@ export const useFeedTokens = () => {
   const calls = useMemo(() => feedsTokens?.map(({ call }) => call), [feedsTokens]);
 
   const disabled = useMemo(
-    () => !provider || !multicallContract || !fee || calls?.length === 0,
+    () => !provider || !multicallContract || !fee || !calls || calls.length === 0,
     [provider, multicallContract, fee, calls?.length],
   );
 

@@ -38,6 +38,11 @@ export const useContractMulticallMethod = <Res>(
     [disabled, contract, method, args],
   );
 
+  const disabledCall = useMemo(
+    () => disabled || !contract || callDatas.length === 0 || callDatas[0] === '',
+    [callDatas, contract, disabled],
+  );
+
   const call = useSingleCallMethod(
     multicallContract,
     'multicall',
@@ -48,7 +53,7 @@ export const useContractMulticallMethod = <Res>(
         gasLimit,
       })),
     ],
-    { disabled: disabled || !contract || callDatas[0] === '', depBlock, defaultValue },
+    { disabled: disabledCall, depBlock, defaultValue },
     RETRY_OPTIONS_HIGH,
   );
 
