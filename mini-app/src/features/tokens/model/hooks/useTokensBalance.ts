@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { useEffect, useMemo } from 'react';
 
 import useDebounce from 'shared/hooks/useDebounce';
@@ -9,15 +8,11 @@ import { ZERO_ADDRESS } from 'entities/web3/model/constant/adresess';
 import { useSingleCallMethod } from 'entities/web3/model/hooks/useCallContract';
 import { useCallDeps } from 'entities/web3/model/hooks/useCallDeps';
 import { useERC20Contract, useMulticallContract } from 'entities/web3/model/hooks/useContract';
+import { MulticallBalancesResult } from 'entities/web3/model/types/contracts';
 
 import { ITokenList, updateTokens } from '../store';
 
 const gasLimit = 1000000;
-
-interface MulticallBalancesResult {
-  blockNumber: BigNumber;
-  returnData: { returnData: string }[];
-}
 
 export const useFetchTokensBalance = () => {
   const dispatch = useTypedDispatch();
@@ -79,7 +74,6 @@ export const useFetchTokensBalance = () => {
   );
 
   const tokensWithBalance = useDebounce(tokens, 150).value;
-
   useEffect(() => {
     if (tokensWithBalance) {
       dispatch(updateTokens(tokensWithBalance));

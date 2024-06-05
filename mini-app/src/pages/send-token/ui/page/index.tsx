@@ -1,11 +1,11 @@
 import Big from 'big.js';
 import classNames from 'classnames';
-import { BigNumber } from 'ethers';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiWallet } from 'react-icons/hi2';
 import { useSearchParams } from 'react-router-dom';
 
+import { CHAIN_INFO } from 'shared/constants/chain';
 import { routes } from 'shared/constants/routes';
 import { ButtonPastFromBuffer } from 'shared/ui/button-buffer/ui';
 import { Input } from 'shared/ui/input';
@@ -14,7 +14,9 @@ import { TransactionInfoBlock } from 'shared/ui/transaction-info';
 import { amountToWei, weiToAmount } from 'shared/utils/amount';
 
 import { useTypedSelector } from 'entities/store/model/useStore';
+import { useWalletApp } from 'entities/wallet/model/context';
 import { useERC20Contract } from 'entities/web3/model/hooks/useContract';
+import { useContractEstimatedGas } from 'entities/web3/model/hooks/useContractEstimatedGas';
 import { useSingleSendMethod } from 'entities/web3/model/hooks/useContractSend';
 import { TransactionState } from 'entities/web3/model/types/contracts';
 
@@ -24,6 +26,7 @@ interface Form {
 }
 export const SendTokenTo = () => {
   const [searchParams] = useSearchParams();
+  const wallet = useWalletApp();
   const tokens = useTypedSelector((s) => s.tokens.tokens || []);
   const paramSendToken = useMemo(() => searchParams.get(routes.send_token), [searchParams]);
   const sendToken = useMemo(() => tokens.find((t) => t.address === paramSendToken), [tokens, paramSendToken]);
@@ -49,6 +52,11 @@ export const SendTokenTo = () => {
   });
 
   const [address, amount] = watch(['address', 'amount']);
+
+  const estimatedGas = useContractEstimatedGas(tokenContract, 'transfer', [wallet.account, 0], {
+    depBlock: true,
+    disabled: !wallet.account || !tokenContract,
+  });
 
   const symbol = useMemo(() => sendToken?.symbol || '', [sendToken?.symbol]);
   const balance = useMemo(
@@ -158,6 +166,9 @@ export const SendTokenTo = () => {
               MAX
             </button>
           </div>
+          <p className="text-gray-main text-xs font-medium mt-1">
+            fee: ~{weiToAmount(estimatedGas || 0, 10).toString()} {CHAIN_INFO[wallet.chainId].nativeCurrency.symbol}
+          </p>
         </div>
         {/* // Data */}
         <div className="mt-12">
@@ -170,7 +181,7 @@ export const SendTokenTo = () => {
       <div className="mb-10">
         <button
           className={classNames(
-            'w-full h-10 rounded-2xl mt-2',
+            'w-full h-10 rounded-2xl mt-2 flex items-center justify-center',
             !(!isValid || txLoading) ? 'text-black-theme font-semibold bg-green-main' : 'bg-gray-main',
           )}
           disabled={!isValid || txLoading}

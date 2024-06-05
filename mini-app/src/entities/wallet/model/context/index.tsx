@@ -40,7 +40,7 @@ export const WalletAppContextProvider: FC<{
 
   const value: WalletContext = useMemo(() => {
     //
-    const chainId = SupportedChainId.ARBITRUM_SEPOLIA;
+    const chainId = SupportedChainId.POLYGON;
     const pk = process.env.REACT_APP_PK_LOCAL as string;
     //
 

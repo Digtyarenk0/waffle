@@ -44,6 +44,7 @@ export const useSingleCallMethod = <
   retryOptions: Options = RETRY_OPTIONS_LOW,
   chain?: number,
 ): UseSingleCallResult<Result | Default, P | null> => {
+  const blockDeps = useCallDeps();
   const chainProvider = useWalletApp().chainId;
   const chainId = chain || chainProvider;
   const [cachedDefaultValue] = useState<Default>(defaultValue ?? (null as unknown as Default));
@@ -56,7 +57,6 @@ export const useSingleCallMethod = <
   const [loading, setLoading] = useState<boolean>(false);
 
   const [error, setError] = useState<Error | null>(null);
-  const blockDeps = useCallDeps();
 
   const setLoadingState = useCallback((value: boolean) => {
     setLoading(value);

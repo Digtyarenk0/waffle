@@ -1,21 +1,40 @@
+import Big from 'big.js';
 import { memo, useMemo } from 'react';
 
 import { weiToAmount } from 'shared/utils/amount';
 
+import { useTypedSelector } from 'entities/store/model/useStore';
+
 import { IToken } from 'features/tokens/model/store';
 
-export const HomeTokenItem = memo((t: IToken) => {
+export const HomeTokenItem = memo((token: IToken) => {
+  const priceUSD = useTypedSelector((s) => s.tokens.prices?.[token.address]);
+
   const balance = useMemo(() => {
-    if (t.balanceWei === '0') return '0';
-    return weiToAmount(t.balanceWei || 0, t.decimals || 18).toFixed(7);
-  }, [t.balanceWei]);
+    if (token.balanceWei === '0') return '0';
+    return weiToAmount(token.balanceWei || 0, token.decimals || 18).toFixed(4);
+  }, [token.balanceWei]);
+
+  const price = useMemo(() => {
+    if (!priceUSD) return;
+    return {
+      cost: Big(priceUSD).toFixed(2),
+      sum: balance !== '0' && Big(priceUSD).mul(balance).toFixed(2),
+    };
+  }, [priceUSD, balance]);
 
   return (
     <div className="flex items-center w-full">
-      <img className="w-7 h-7 m-1 mr-3" src={t.logo} alt="" />
-      <div>
-        <p>{t.name}</p>
-        <p>{`${balance} ${t.symbol}`}</p>
+      <img className="w-7 h-7 m-1 mr-3" src={token.logo} alt="" />
+      <div className="flex justify-between w-full">
+        <div>
+          <p>{token.symbol}</p>
+          <p className="text-gray-main">{price?.cost ? `${price?.cost} $` : '~'}</p>
+        </div>
+        <div className="text-right">
+          <p>{`${balance}`}</p>
+          <p className="text-gray-main">{price?.sum ? `${price?.sum} $` : '~'}</p>
+        </div>
       </div>
     </div>
   );

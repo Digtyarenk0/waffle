@@ -10,14 +10,18 @@ export interface ITokenList {
   decimals: number;
   address: string;
 }
+export interface ITokenPrice {
+  [address: string]: string; // token address: priceUSD
+}
 
 export interface IToken extends ITokenList {
   balanceWei: string; // user balance amount
 }
 
 export interface TokensState {
-  list?: ITokenList[];
   tokens?: IToken[];
+  list?: ITokenList[];
+  prices?: ITokenPrice;
 }
 
 const initialState: TokensState = {};
@@ -41,9 +45,15 @@ export const tokensSlice = createSlice({
         return Big(balanceB).minus(balanceA).toNumber();
       });
     },
+    addTokensPrices: (state, action: PayloadAction<ITokenPrice[]>) => {
+      state.prices = action.payload.reduce((acc, item) => {
+        acc[item.address] = item.priceUSD;
+        return acc;
+      }, {} as ITokenPrice);
+    },
   },
 });
 
-export const { updateTokens, updateTokenList, addTokensToList } = tokensSlice.actions;
+export const { updateTokens, updateTokenList, addTokensToList, addTokensPrices } = tokensSlice.actions;
 
 export default tokensSlice.reducer;

@@ -1,4 +1,4 @@
-import { Contract, ContractReceipt, PayableOverrides } from 'ethers';
+import { BigNumber, Contract, ContractReceipt, PayableOverrides } from 'ethers';
 
 // Return the names of supported methods
 // Ex: ContractMethodsType<ERC20> -> "symbol" | "balanceOf" | "decimals" ...
@@ -24,3 +24,14 @@ export interface TransactionState {
 }
 // Overrides from typechain
 export type Overrides = PayableOverrides & { from?: string | Promise<string> };
+
+export interface MulticallCallData {
+  target: string;
+  callData: string;
+  gasLimit: number;
+}
+
+export interface MulticallBalancesResult {
+  blockNumber: BigNumber;
+  returnData: { returnData: string }[];
+}

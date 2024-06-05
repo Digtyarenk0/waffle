@@ -1,6 +1,9 @@
-export const UNI_LIST = 'https://cloudflare-ipfs.com/ipns/tokens.uniswap.org';
-export const UNI_EXTENDED_LIST = 'https://cloudflare-ipfs.com/ipns/extendedtokens.uniswap.org';
-const UNI_UNSUPPORTED_LIST = 'https://cloudflare-ipfs.com/ipns/unsupportedtokens.uniswap.org';
+export const UNI_LIST =
+  'https://lime-separate-constrictor-207.mypinata.cloud/ipfs/QmSdNF49GamJcqTEJF3Frsu5YKri8joJGtEfJWYQPFPhX9'; // 'https://cloudflare-ipfs.com/ipns/tokens.uniswap.org';
+export const UNI_EXTENDED_LIST =
+  'https://lime-separate-constrictor-207.mypinata.cloud/ipfs/QmZs5ZTtcyz9f8SzmqtptTLcLt2grYh4emhyvkTTouW8Et'; // 'https://cloudflare-ipfs.com/ipns/extendedtokens.uniswap.org';
+const UNI_UNSUPPORTED_LIST =
+  'https://lime-separate-constrictor-207.mypinata.cloud/ipfs/QmNeCqjdxjnw3otM2kYhrNnDyZmESZj9WNmTCi1XcqRoeE'; // 'https://cloudflare-ipfs.com/ipns/unsupportedtokens.uniswap.org';
 const AAVE_LIST = 'tokenlist.aave.eth';
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json';
 const COINGECKO_LIST = 'https://tokens.coingecko.com/uniswap/all.json';
@@ -10,7 +13,8 @@ const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-
 const WRAPPED_LIST = 'wrapped.tokensoft.eth';
 export const ARBITRUM_LIST = 'https://bridge.arbitrum.io/token-list-42161.json';
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LIST];
-export const UNISWAP_TOKENS_LIST_URL = 'https://cloudflare-ipfs.com/ipns/tokens.uniswap.org';
+export const UNISWAP_TOKENS_LIST_URL =
+  'https://lime-separate-constrictor-207.mypinata.cloud/ipfs/QmSdNF49GamJcqTEJF3Frsu5YKri8joJGtEfJWYQPFPhX9'; // 'https://cloudflare-ipfs.com/ipns/tokens.uniswap.org';
 
 // default lists to be 'active' aka searched across
 export const DEFAULT_ACTIVE_LIST_URLS: string[] = [UNI_LIST];

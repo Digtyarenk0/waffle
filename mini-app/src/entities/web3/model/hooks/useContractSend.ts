@@ -13,7 +13,6 @@ import { incTxCount } from 'entities/wallet/model/store';
 import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
 import { GAS_LIMIT_ADDITIONAL, GAS_LIMIT_MULTIPLIER } from '../constant/gasLimit';
-import { isOverrides } from '../helper/check-interface';
 import { ContractMethodsType, MethodParametersType, TransactionState } from '../types/contracts';
 
 interface UseSingleSendOptions {

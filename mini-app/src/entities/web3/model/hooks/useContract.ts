@@ -8,6 +8,7 @@ import { useWalletApp } from 'entities/wallet/model/context';
 import UniswapMulticallABI from '../abis/uniswap-multicall.json';
 import { DEAD_ADDRESS, UNISWAP_MULTICALL_ADDRESSES } from '../constant/adresess';
 import { ERC20, ERC20__factory } from '../contracts/typechain/erc20';
+import { ChainLinkAggregatorV3InterfaceABI } from '../types/chainlink';
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -74,4 +75,8 @@ export const useMulticallContract = () => {
 
 export const useERC20Contract = (erc20Address: string | null | undefined) => {
   return useContract<ERC20>(erc20Address, ERC20__factory.abi);
+};
+
+export const useChainlinkContract = (feeAddress: string) => {
+  return useContract(feeAddress, ChainLinkAggregatorV3InterfaceABI);
 };

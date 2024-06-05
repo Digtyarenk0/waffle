@@ -8,12 +8,16 @@ import { ButtonRound } from 'shared/ui/button-round';
 
 import { useTypedSelector } from 'entities/store/model/useStore';
 
+import { useFeedTokens } from 'features/tokens/model/hooks/useTokenPrice';
+
 import { Header } from 'widgets/header';
 
 import { HomeTokenItem } from '../token-item';
 
 export const HomePage = () => {
   const tokensWithBalance = useTypedSelector((s) => s.tokens.tokens);
+
+  useFeedTokens();
 
   const tokens = useMemo(() => {
     return tokensWithBalance?.map((t) => <HomeTokenItem {...t} key={t.address} />);
@@ -37,7 +41,7 @@ export const HomePage = () => {
         <ButtonRound ico={<LuMoreVertical size="25px" />} route="" text="More" /> */}
         </div>
       </div>
-      <div className="mt-2 pl-4">{tokens}</div>
+      <div className="mt-2 px-4">{tokens}</div>
     </div>
   );
 };
