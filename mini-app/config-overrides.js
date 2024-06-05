@@ -15,7 +15,6 @@ module.exports = override(
         "@shared": path.resolve(__dirname, "./src/shared"),
         "@widgets": path.resolve(__dirname, "./src/widgets"),
     }),
-
     // adjust the underlying workbox
     adjustWorkbox(wb =>
         Object.assign(wb, {

@@ -11,7 +11,7 @@ import { ErrorBoundary } from 'widgets/error-boundary/ui';
 import { TelegramThemeProvider, TelegramWebProvider } from './providers/telegram';
 import { RouterApp } from './router/ui/router';
 
-import './index.css';
+import './styles/index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const App = () => {

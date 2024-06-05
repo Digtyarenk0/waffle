@@ -5,7 +5,7 @@ import { RPC_URLS } from './rpc';
 export interface ChainInfo {
   label: string;
   rpcUrls: string[];
-  explorer?: string[];
+  explorer: string[];
   nativeCurrency: {
     name: string; // 'Goerli ETH',
 
@@ -16,10 +16,16 @@ export interface ChainInfo {
 }
 
 export const CHAIN_INFO: { [chainId in SupportedChainId]: ChainInfo } & { [chainId: number]: ChainInfo } = {
-  [SupportedChainId.AMOY]: {
-    label: 'Amoy',
-    explorer: ['https://amoy.polygonscan.com/'],
-    rpcUrls: [RPC_URLS[SupportedChainId.AMOY]],
+  [SupportedChainId.POLYGON]: {
+    label: 'POLYGON',
+    explorer: ['https://polygonscan.com/'],
+    rpcUrls: [RPC_URLS[SupportedChainId.POLYGON]],
     nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 },
+  },
+  [SupportedChainId.ARBITRUM_SEPOLIA]: {
+    label: 'Arbitrum Sepolia',
+    rpcUrls: [RPC_URLS[SupportedChainId.ARBITRUM_SEPOLIA]],
+    explorer: ['https://sepolia.arbiscan.io/'],
+    nativeCurrency: { name: 'Arbitrum Sepolia ETH', symbol: 'ETH', decimals: 18 },
   },
 };

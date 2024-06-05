@@ -6,10 +6,6 @@ import { NavLink } from 'react-router-dom';
 
 import { routes } from 'shared/constants/routes';
 
-import { useFetchTokensLists } from 'features/tokens/model/hooks/useTokenList';
-import { useFetchTokensBalance } from 'features/tokens/model/hooks/useTokensBalance';
-import { ListsUpdater } from 'features/tokens/ui/list-updater';
-
 interface FooterBtnProps {
   ico: ReactElement;
   text: string;
@@ -17,7 +13,7 @@ interface FooterBtnProps {
   className?: string;
 }
 
-const style = 'p-3 text-center font-semibold transition-all border-t-2 border-gray-main';
+const style = 'p-2 text-center font-medium transition-all border-t-[1px] border-gray-main';
 
 const FooterBtn = ({ text, ico, route, className }: FooterBtnProps) => (
   <NavLink
@@ -33,9 +29,6 @@ const FooterBtn = ({ text, ico, route, className }: FooterBtnProps) => (
 );
 
 export const Footer = () => {
-  useFetchTokensLists();
-  useFetchTokensBalance();
-
   return (
     <div className="grid grid-cols-3 grid-rows-1 w-full">
       <FooterBtn
@@ -56,7 +49,6 @@ export const Footer = () => {
         className="text-white-main "
         text="-"
       />
-      <ListsUpdater />
     </div>
   );
 };

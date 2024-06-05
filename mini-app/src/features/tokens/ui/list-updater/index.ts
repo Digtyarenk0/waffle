@@ -52,6 +52,7 @@ export const ListsUpdater = (): null => {
         .filter((i) => !!i) || [];
     return tokensByUrls.flat() as ITokenList[];
   }, [listDebounce, chainId]);
+
   const tokensDebounce = useDebounce(tokens, 200).value;
 
   const fetchList = useFetchListCallback();
@@ -104,7 +105,7 @@ export const ListsUpdater = (): null => {
   useEffect(() => {
     if (tokensDebounce) {
       console.log('Tokens from all', tokensDebounce.length);
-      dispatch(addTokensToList(tokensDebounce.slice(0, 200)));
+      dispatch(addTokensToList(tokensDebounce.slice(0, 400)));
     }
   }, [tokensDebounce]);
 
