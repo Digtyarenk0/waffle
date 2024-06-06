@@ -8,8 +8,7 @@ import { RPC_PROVIDERS } from 'shared/constants/rpc';
 import { useWalletApp } from 'entities/wallet/model/context';
 import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
-import UniswapMulticallABI from '../abis/uniswap-multicall.json';
-import { DEAD_ADDRESS, UNISWAP_MULTICALL_ADDRESSES } from '../constant/adresess';
+import { DEAD_ADDRESS } from '../constant/adresess';
 import { ERC20, ERC20__factory } from '../contracts/typechain/erc20';
 import { ChainLinkAggregatorV3InterfaceABI } from '../types/chainlink';
 
@@ -96,14 +95,6 @@ export const useContractCallChain = <T extends Contract>(
       return null;
     }
   }, [addressOrAddressMap, ABI, chainId, chainId]);
-};
-
-export const useMulticallContract = () => {
-  return useContract(UNISWAP_MULTICALL_ADDRESSES, UniswapMulticallABI);
-};
-
-export const useMulticallContractChain = (chainId: SupportedChainId) => {
-  return useContractCallChain(UNISWAP_MULTICALL_ADDRESSES, UniswapMulticallABI, chainId);
 };
 
 export const useERC20Contract = (erc20Address: string | null | undefined) => {

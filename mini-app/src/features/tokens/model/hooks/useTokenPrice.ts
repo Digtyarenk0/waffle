@@ -7,7 +7,8 @@ import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStor
 import { useWalletApp } from 'entities/wallet/model/context';
 import { useSingleCallMethod } from 'entities/web3/model/hooks/useCallContract';
 import { useCallDeps } from 'entities/web3/model/hooks/useCallDeps';
-import { useChainlinkContract, useMulticallContract } from 'entities/web3/model/hooks/useContract';
+import { useChainlinkContract } from 'entities/web3/model/hooks/useContract';
+import { useMulticallContract } from 'entities/web3/model/hooks/useMulticallContract';
 import { MulticallBalancesResult, MulticallCallData } from 'entities/web3/model/types/contracts';
 
 import { ChainlinkFeed, PRICE_FEENDS_BY_CHAIN } from '../constants/feeds';

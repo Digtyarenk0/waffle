@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import useDebounce from 'shared/hooks/useDebounce';
 
@@ -9,15 +9,42 @@ import { SupportedChainId } from 'entities/wallet/model/types/chain';
 import { ZERO_ADDRESS } from 'entities/web3/model/constant/adresess';
 import { useSingleCallMethod } from 'entities/web3/model/hooks/useCallContract';
 import { useCallDeps } from 'entities/web3/model/hooks/useCallDeps';
-import { useERC20Contract, useMulticallContractChain } from 'entities/web3/model/hooks/useContract';
+import { useERC20Contract } from 'entities/web3/model/hooks/useContract';
+import { useMulticallContractChains } from 'entities/web3/model/hooks/useMulticallContract';
 import { MulticallBalancesResult } from 'entities/web3/model/types/contracts';
 
-import { updateTokens } from '../../store';
+import { CallDataByTokenList } from 'features/tokens/types';
 
-import { CALL_DATA, callDataByTokenList, mapBalanceResult } from './helper-balance';
+import { IToken, updateTokens } from '../../store';
+
+import { CALL_DATA, callDataByTokenList, mapBalanceResult, parseTokensBalanceMulticallResult } from './helper-balance';
 
 const gasLimit = 1000000;
 const callData = CALL_DATA.balanceOf;
+
+const useCallsMethod = (
+  calls: CallDataByTokenList,
+  disabled: boolean,
+): Record<SupportedChainId, MulticallBalancesResult | undefined> => {
+  const multicall = useMulticallContractChains();
+
+  const polygonCall = calls?.[SupportedChainId.POLYGON]?.calls;
+  const arbitrumCall = calls?.[SupportedChainId.ARBITRUM_SEPOLIA]?.calls;
+
+  const polygon = useSingleCallMethod(multicall?.[SupportedChainId.POLYGON], 'multicall', [polygonCall], {
+    depBlock: true,
+    disabled: disabled || !polygonCall,
+  }).result as MulticallBalancesResult | undefined;
+  const arbitrum = useSingleCallMethod(multicall?.[SupportedChainId.ARBITRUM_SEPOLIA], 'multicall', [arbitrumCall], {
+    depBlock: true,
+    disabled: disabled || !arbitrumCall,
+  }).result as MulticallBalancesResult | undefined;
+
+  return {
+    [SupportedChainId.POLYGON]: polygon,
+    [SupportedChainId.ARBITRUM_SEPOLIA]: arbitrum,
+  };
+};
 
 export const useFetchTokensBalance = () => {
   const dispatch = useTypedDispatch();
@@ -28,56 +55,56 @@ export const useFetchTokensBalance = () => {
   const blockDeps = useCallDeps();
   const erc20 = useERC20Contract(ZERO_ADDRESS);
 
-  const multicallPolygon = useMulticallContractChain(SupportedChainId.POLYGON);
-  const multicallArbitrum = useMulticallContractChain(SupportedChainId.ARBITRUM_SEPOLIA);
+  const multicall = useMulticallContractChains();
 
   const tokensListDebunce = useDebounce(tokensList, 200).value;
   const calls = useMemo(
     () => callDataByTokenList(callData, gasLimit, tokensListDebunce),
     [tokensListDebunce?.length, blockDeps],
   );
-
-  const disabled = useMemo(
-    () => !multicallPolygon || !multicallArbitrum || !erc20 || !tokensList || !account || !calls,
-    [multicallPolygon, multicallArbitrum, erc20, tokensList, account, calls],
+  const decode = useCallback(
+    (v: string) => erc20?.interface.decodeFunctionResult('balanceOf', v) as unknown as BigNumber,
+    [erc20],
   );
 
-  const responsePolygon = useSingleCallMethod(multicallPolygon, 'multicall', [calls?.polygon?.calls], {
-    depBlock: true,
-    disabled: disabled || !calls?.polygon,
-  }).result as MulticallBalancesResult | undefined;
-  const responseArbitrum = useSingleCallMethod(multicallArbitrum, 'multicall', [calls?.arbitrum?.calls], {
-    depBlock: true,
-    disabled: disabled || !calls?.arbitrum,
-  }).result as MulticallBalancesResult | undefined;
+  const disabled = useMemo(
+    () => !multicall || !multicall || !erc20 || !tokensList || !account || !calls,
+    [multicall, multicall, erc20, tokensList, account, calls],
+  );
 
-  const resultPolygon = useMemo(() => {
-    if (!responsePolygon?.returnData || !erc20 || disabled || !calls?.polygon) return;
-    return responsePolygon.returnData.map(({ returnData }) => {
-      if (returnData === '0x') return BigNumber.from(0);
-      return erc20.interface.decodeFunctionResult('balanceOf', returnData) as unknown as BigNumber;
+  const response = useCallsMethod(calls, disabled);
+
+  const result = useMemo(() => {
+    if (!decode || disabled || !calls) return;
+    const chainResult = {} as Record<SupportedChainId, BigNumber[]>;
+    Object.keys(calls).forEach((c) => {
+      const chain = c as unknown as SupportedChainId;
+      const callsData = calls[chain];
+      const res = response[chain];
+      if (!callsData || !res) return;
+      const parsed = parseTokensBalanceMulticallResult(res, decode);
+      if (parsed) chainResult[chain] = parsed;
     });
-  }, [responsePolygon?.returnData, calls?.polygon, disabled]);
+    return chainResult;
+  }, [decode, disabled, calls, response]);
 
-  const resultArbitrum = useMemo(() => {
-    if (!responseArbitrum?.returnData || !erc20 || disabled || !calls?.arbitrum) return;
-    return responseArbitrum.returnData.map(({ returnData }) => {
-      if (returnData === '0x') return BigNumber.from(0);
-      return erc20.interface.decodeFunctionResult('balanceOf', returnData) as unknown as BigNumber;
+  const tokens: IToken[] = useMemo(() => {
+    if (!result || !calls) return [] as IToken[];
+    const tokensBalances = [] as IToken[][];
+    Object.keys(result).forEach((c) => {
+      const chain = c as unknown as SupportedChainId;
+      if (!calls?.[chain]?.tokens) return;
+      const resultChain = result[chain];
+      const tokens = calls?.[chain]?.tokens;
+      const balancesReult = mapBalanceResult(resultChain, tokens);
+      tokensBalances.push(balancesReult);
     });
-  }, [responseArbitrum?.returnData, calls?.arbitrum, disabled]);
-
-  const tokens = useMemo(() => {
-    const polygon = mapBalanceResult(resultPolygon, calls?.polygon?.tokens);
-    const arbitrum = mapBalanceResult(resultArbitrum, calls?.arbitrum?.tokens);
-    console.log('arbitrum:', { resultArbitrum, cals: calls?.arbitrum });
-    return [...polygon, ...arbitrum];
-  }, [resultPolygon, resultArbitrum, calls]);
+    return tokensBalances.flat();
+  }, [result, calls]);
 
   const tokensWithBalance = useDebounce(tokens, 150).value;
   useEffect(() => {
     if (tokensWithBalance) {
-      // console.log({ tokensWithBalance });
       dispatch(updateTokens(tokensWithBalance));
     }
   }, [tokensWithBalance]);
