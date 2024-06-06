@@ -1,6 +1,7 @@
 import Big from 'big.js';
 import { memo, useMemo } from 'react';
 
+import { ICONS_CHAINS } from 'shared/constants/icons';
 import { weiToAmount } from 'shared/utils/amount';
 
 import { IToken } from 'features/tokens/model/store';
@@ -24,8 +25,11 @@ export const HomeTokenItem = memo((token: HomeTokenItem) => {
   }, [token.priceUSD, balance]);
 
   return (
-    <div className="flex items-center w-full">
-      <img className="w-7 h-7 m-1 mr-3" src={token.logo} alt="" />
+    <div className="flex items-center w-full ">
+      <div className="relative">
+        <img className="w-8 h-8 m-1 mr-3" src={token.logo} alt="" />
+        <img src={ICONS_CHAINS[token.chainId]} alt="" className="absolute bottom-0 right-1 w-4 h-4" />
+      </div>
       <div className="flex justify-between w-full">
         <div>
           <p>{token.symbol}</p>

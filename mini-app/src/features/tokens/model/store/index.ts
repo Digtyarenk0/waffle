@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Big from 'big.js';
 
-import { getUniqueListBy } from '../helper';
+import { SupportedChainId } from 'entities/wallet/model/types/chain';
+
+import { getUniqueListChainsBy } from '../helper';
 
 export interface ITokenList {
   name: string;
@@ -9,6 +11,7 @@ export interface ITokenList {
   logo: string;
   decimals: number;
   address: string;
+  chainId: SupportedChainId;
 }
 export interface ITokenPrice {
   [address: string]: string; // token address: priceUSD
@@ -32,7 +35,7 @@ export const tokensSlice = createSlice({
   reducers: {
     addTokensToList: (state, action: PayloadAction<ITokenList[]>) => {
       const oldList = state.list || [];
-      state.list = getUniqueListBy([...oldList, ...action.payload], 'symbol');
+      state.list = getUniqueListChainsBy([...oldList, ...action.payload], 'symbol');
     },
     updateTokenList: (state, action: PayloadAction<ITokenList[]>) => {
       state.list = action.payload;

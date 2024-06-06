@@ -46,7 +46,7 @@ export const WalletAppContextProvider: FC<{
 
     const provider = RPC_PROVIDERS[chainId];
     const wallet = new ethers.Wallet(pk).connect(provider);
-    toast.info(`Network ${CHAIN_INFO[chainId].label}`);
+    // toast.info(`Network ${CHAIN_INFO[chainId].label}`);
     return {
       wallet: wallet,
       provider,

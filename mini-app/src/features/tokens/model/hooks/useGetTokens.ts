@@ -40,7 +40,8 @@ export const fetchUniswapTokenList = createApi({
       }),
       transformResponse: (response: UniTokensListResponse, _, chainId) => {
         return response.tokens.filter(
-          (t) => t.chainId === chainId && t.symbol !== CHAIN_INFO[chainId]?.nativeCurrency?.symbol,
+          // (t) => t.chainId === chainId && t.symbol !== CHAIN_INFO[chainId]?.nativeCurrency?.symbol,
+          (t) => t.symbol !== CHAIN_INFO[chainId]?.nativeCurrency?.symbol,
         );
       },
     }),

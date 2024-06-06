@@ -3,7 +3,10 @@ import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import { Contract } from 'ethers';
 import { useMemo } from 'react';
 
+import { RPC_PROVIDERS } from 'shared/constants/rpc';
+
 import { useWalletApp } from 'entities/wallet/model/context';
+import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
 import UniswapMulticallABI from '../abis/uniswap-multicall.json';
 import { DEAD_ADDRESS, UNISWAP_MULTICALL_ADDRESSES } from '../constant/adresess';
@@ -70,8 +73,37 @@ export const useContract = <T extends Contract>(
   }, [addressOrAddressMap, ABI, provider, account, chainId]);
 };
 
+export const useContractCallChain = <T extends Contract>(
+  addressOrAddressMap:
+    | string
+    | {
+        [chainId: number]: string;
+      }
+    | null
+    | undefined,
+  ABI: any,
+  chainId: SupportedChainId,
+): T | null => {
+  return useMemo(() => {
+    if (!addressOrAddressMap || !ABI || !chainId) return null;
+    const address = typeof addressOrAddressMap === 'string' ? addressOrAddressMap : addressOrAddressMap[chainId];
+
+    if (!address) return null;
+    try {
+      return getContract<T>(address, ABI, RPC_PROVIDERS[chainId]);
+    } catch (error) {
+      console.error('Failed to create contract', error);
+      return null;
+    }
+  }, [addressOrAddressMap, ABI, chainId, chainId]);
+};
+
 export const useMulticallContract = () => {
   return useContract(UNISWAP_MULTICALL_ADDRESSES, UniswapMulticallABI);
+};
+
+export const useMulticallContractChain = (chainId: SupportedChainId) => {
+  return useContractCallChain(UNISWAP_MULTICALL_ADDRESSES, UniswapMulticallABI, chainId);
 };
 
 export const useERC20Contract = (erc20Address: string | null | undefined) => {

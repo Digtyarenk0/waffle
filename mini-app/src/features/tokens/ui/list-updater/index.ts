@@ -46,6 +46,7 @@ export const ListsUpdater = (): null => {
               logo: t.logoURI || '',
               decimals: t.decimals,
               address: t.address,
+              chainId: t.chainId,
             }));
           return currentChainTokens;
         })

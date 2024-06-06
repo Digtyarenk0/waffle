@@ -19,7 +19,7 @@ export const useFetchListCallback = (): ((listUrl: string, skipValidation?: bool
       dispatch(fetchTokenListPending({ requestId, url: listUrl }));
       try {
         const tokenList = await fetchTokenList(listUrl, (ensName: string) =>
-          resolveENSContentHash(ensName, RPC_PROVIDERS[SupportedChainId.ARBITRUM_SEPOLIA]),
+          resolveENSContentHash(ensName, RPC_PROVIDERS[SupportedChainId.POLYGON]),
         );
         dispatch(fetchTokenListFulfilled({ url: listUrl, tokenList, requestId }));
       } catch (error: any) {

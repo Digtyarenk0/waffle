@@ -3,7 +3,7 @@ import { ChainlinkFeed } from '.';
 // https://docs.chain.link/data-feeds/price-feeds/addresses?network=polygon
 // [].slice.call(document.getElementsByTagName("tbody")[0].children).map(row => ({symbol: row.cells?.[0].innerText, id: row.children[4].innerText}))
 
-export const POLYGON_PRICE_FEENDS: ChainlinkFeed[] = [
+export const POLYGON_CHAINLINK_PRICE_FEENDS: ChainlinkFeed[] = [
   {
     pL: 'WBTC',
     pR: 'USD',
