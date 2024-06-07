@@ -4,6 +4,8 @@ import { useMemo } from 'react';
 
 import { RETRY_OPTIONS_HIGH } from 'shared/constants/retry-config';
 
+import { SupportedChainId } from 'entities/wallet/model/types/chain';
+
 import { useSingleCallMethod } from './useCallContract';
 import { useMulticallContract } from './useMulticallContract';
 
@@ -25,8 +27,9 @@ export const useContractMulticallMethod = <Res>(
   method: string,
   args: any[][] | any[],
   params: Params,
+  chainId: SupportedChainId,
 ) => {
-  const multicallContract = useMulticallContract();
+  const multicallContract = useMulticallContract(chainId);
   const { gasLimit = defaultGasLimit, disabled = false, depBlock = false, defaultValue } = params;
 
   const callDatas = useMemo(

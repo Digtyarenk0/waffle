@@ -1,11 +1,9 @@
 import retry from 'async-retry';
 import Big from 'big.js';
 import { Contract } from 'ethers';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { RETRY_OPTIONS_LOW } from 'shared/constants/retry-config';
-
-import { useWalletApp } from 'entities/wallet/model/context';
 
 import { GAS_LIMIT_MULTIPLIER, GAS_LIMIT_ADDITIONAL } from '../constant/gasLimit';
 import { ContractMethodsType, MethodParametersType } from '../types/contracts';
@@ -28,12 +26,13 @@ export const useContractEstimatedGas = <
   methodName: M,
   inputs?: P,
   {
-    depBlock = false,
+    depBlock = false, // TODO: ADD deepBlock
     disabled = false,
     gasLimitMultiplier = GAS_LIMIT_MULTIPLIER.default,
     gasLimitAdditional = GAS_LIMIT_ADDITIONAL.default,
   }: Options = {},
 ) => {
+  const blockDeps = useCallDeps();
   const [estimatedGas, setEstimatedGas] = useState('0');
 
   useEffect(() => {
@@ -57,7 +56,7 @@ export const useContractEstimatedGas = <
     };
 
     estimateGas();
-  }, [disabled, gasLimitMultiplier, gasLimitAdditional, JSON.stringify(inputs), methodName]);
+  }, [depBlock && blockDeps, disabled, gasLimitMultiplier, gasLimitAdditional, JSON.stringify(inputs), methodName]);
 
   return estimatedGas;
 };

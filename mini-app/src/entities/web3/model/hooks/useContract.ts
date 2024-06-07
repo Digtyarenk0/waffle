@@ -56,34 +56,9 @@ export const useContract = <T extends Contract>(
     | null
     | undefined,
   ABI: any,
-): T | null => {
-  const { provider, chainId, account } = useWalletApp();
-
-  return useMemo(() => {
-    if (!addressOrAddressMap || !ABI || !provider || !chainId) return null;
-    const address = typeof addressOrAddressMap === 'string' ? addressOrAddressMap : addressOrAddressMap[chainId];
-    if (!address) return null;
-    try {
-      return getContract<T>(address, ABI, provider, account ? account : undefined);
-    } catch (error) {
-      console.error('Failed to create contract', error);
-      return null;
-    }
-  }, [addressOrAddressMap, ABI, provider, account, chainId]);
-};
-
-export const useContractByChain = <T extends Contract>(
-  addressOrAddressMap:
-    | string
-    | {
-        [chainId: number]: string;
-      }
-    | null
-    | undefined,
-  ABI: any,
   chainId: SupportedChainId,
-  account?: string,
 ): T | null => {
+  const { account } = useWalletApp();
   return useMemo(() => {
     if (!addressOrAddressMap || !ABI || !chainId) return null;
     const address = typeof addressOrAddressMap === 'string' ? addressOrAddressMap : addressOrAddressMap[chainId];
@@ -98,14 +73,10 @@ export const useContractByChain = <T extends Contract>(
   }, [addressOrAddressMap, ABI, account, chainId]);
 };
 
-export const useERC20Contract = (
-  erc20Address: string | null | undefined,
-  chainId: SupportedChainId,
-  account?: string,
-) => {
-  return useContractByChain<ERC20>(erc20Address, ERC20__factory.abi, chainId, account);
+export const useERC20Contract = (erc20Address: string | null | undefined, chainId: SupportedChainId) => {
+  return useContract<ERC20>(erc20Address, ERC20__factory.abi, chainId);
 };
 
-export const useChainlinkContract = (feeAddress: string) => {
-  return useContract(feeAddress, ChainLinkAggregatorV3InterfaceABI);
+export const useChainlinkContract = (feeAddress: string, chainId: SupportedChainId) => {
+  return useContract(feeAddress, ChainLinkAggregatorV3InterfaceABI, chainId);
 };

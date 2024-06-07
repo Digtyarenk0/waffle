@@ -76,6 +76,7 @@ module.exports = {
         ],
         'react/display-name': 'off',
         'import/no-unresolved': 'off',
+        'import/no-unused-modules': 'warn',
         'import/order': [
             'error',
             {

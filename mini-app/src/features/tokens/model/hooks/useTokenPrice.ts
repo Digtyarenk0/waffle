@@ -5,6 +5,8 @@ import { weiToAmount } from 'shared/utils/amount';
 
 import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
+import { SupportedChainId } from 'entities/wallet/model/types/chain';
+import { MOCK_ADDRESS } from 'entities/web3/model/constant/adresess';
 import { useSingleCallMethod } from 'entities/web3/model/hooks/useCallContract';
 import { useCallDeps } from 'entities/web3/model/hooks/useCallDeps';
 import { useChainlinkContract } from 'entities/web3/model/hooks/useContract';
@@ -21,17 +23,19 @@ interface CallTokenData {
 }
 
 const gasLimit = 1000000;
+const chainId = SupportedChainId.POLYGON;
+
 export const useFeedTokens = () => {
   const dispatch = useTypedDispatch();
-  const { provider, chainId } = useWalletApp();
+  const { provider } = useWalletApp();
 
   const blockDeps = useCallDeps();
   const tokens = useTypedSelector((s) => s.tokens.tokens);
   const [feedsTokens, setFeedsTokens] = useState<CallTokenData[]>();
 
-  const fee = useChainlinkContract('0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165'); // for encode/decode
+  const fee = useChainlinkContract(MOCK_ADDRESS, chainId); // for encode/decode
 
-  const multicallContract = useMulticallContract();
+  const multicallContract = useMulticallContract(chainId);
 
   const tokensDebunce = useDebounce(tokens, 200).value;
   const callData = useMemo(() => fee?.interface.encodeFunctionData('latestRoundData', []) as string, [fee?.interface]);

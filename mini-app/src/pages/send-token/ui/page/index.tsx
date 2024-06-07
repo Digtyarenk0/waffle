@@ -34,7 +34,7 @@ export const SendTokenTo = () => {
 
   const chainId = useMemo(() => sendToken?.chainId || DEFAULT_CHAIN_ID, [sendToken]);
 
-  const tokenContract = useERC20Contract(sendToken?.address, chainId, account);
+  const tokenContract = useERC20Contract(sendToken?.address, chainId);
   const transferToken = useSingleSendMethod(tokenContract, 'transfer');
 
   const [txLoading, setTxLoading] = useState<boolean>(false);
