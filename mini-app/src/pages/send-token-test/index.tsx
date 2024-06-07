@@ -9,7 +9,7 @@ import { amountToWei, weiToAmount } from 'shared/utils/amount';
 
 import { useTypedSelector } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
-import { useNativBalance } from 'entities/wallet/model/hooks/useBalance';
+import { useNativeBalance } from 'entities/wallet/model/hooks/useBalance';
 
 import { IToken } from 'features/tokens/model/store';
 
@@ -39,7 +39,7 @@ const TokenItem = memo((t: IToken) => {
 
 export const SendToken = () => {
   const wallet = useWalletApp();
-  const nativBalance = useNativBalance();
+  const nativBalance = useNativeBalance();
   const tokens = useTypedSelector((s) => s.tokens.tokens);
 
   const [txData, setTxData] = useState<TxData>();

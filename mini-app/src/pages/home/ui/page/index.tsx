@@ -5,6 +5,7 @@ import { TbProgressHelp } from 'react-icons/tb';
 
 import { routes } from 'shared/constants/routes';
 import { ButtonRound } from 'shared/ui/button-round';
+import { HomeTokenItem } from 'shared/ui/token-item';
 
 import { useTypedSelector } from 'entities/store/model/useStore';
 
@@ -12,15 +13,14 @@ import { useFeedTokens } from 'features/tokens/model/hooks/useTokenPrice';
 
 import { Header } from 'widgets/header';
 
-import { HomeTokenItem } from '../token-item';
-
 export const HomePage = () => {
+  const prices = useTypedSelector((s) => s.tokens.prices);
   const tokensWithBalance = useTypedSelector((s) => s.tokens.tokens);
 
   useFeedTokens();
 
   const tokens = useMemo(() => {
-    return tokensWithBalance?.map((t) => <HomeTokenItem {...t} key={t.address} />);
+    return tokensWithBalance?.map((t) => <HomeTokenItem {...t} key={t.address} priceUSD={prices?.[t.address]} />);
   }, [tokensWithBalance]);
 
   return (

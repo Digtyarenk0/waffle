@@ -15,6 +15,7 @@ import { amountToWei, weiToAmount } from 'shared/utils/amount';
 
 import { useTypedSelector } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
+import { DEFAULT_CHAIN_ID } from 'entities/wallet/model/types/chain';
 import { useERC20Contract } from 'entities/web3/model/hooks/useContract';
 import { useContractEstimatedGas } from 'entities/web3/model/hooks/useContractEstimatedGas';
 import { useSingleSendMethod } from 'entities/web3/model/hooks/useContractSend';
@@ -26,12 +27,14 @@ interface Form {
 }
 export const SendTokenTo = () => {
   const [searchParams] = useSearchParams();
-  const wallet = useWalletApp();
+  const { account } = useWalletApp();
   const tokens = useTypedSelector((s) => s.tokens.tokens || []);
   const paramSendToken = useMemo(() => searchParams.get(routes.send_token), [searchParams]);
   const sendToken = useMemo(() => tokens.find((t) => t.address === paramSendToken), [tokens, paramSendToken]);
 
-  const tokenContract = useERC20Contract(sendToken?.address);
+  const chainId = useMemo(() => sendToken?.chainId || DEFAULT_CHAIN_ID, [sendToken]);
+
+  const tokenContract = useERC20Contract(sendToken?.address, chainId, account);
   const transferToken = useSingleSendMethod(tokenContract, 'transfer');
 
   const [txLoading, setTxLoading] = useState<boolean>(false);
@@ -53,9 +56,10 @@ export const SendTokenTo = () => {
 
   const [address, amount] = watch(['address', 'amount']);
 
-  const estimatedGas = useContractEstimatedGas(tokenContract, 'transfer', [wallet.account, 0], {
-    depBlock: true,
-    disabled: !wallet.account || !tokenContract,
+  // const estimatedGas = '10000';
+  const estimatedGas = useContractEstimatedGas(tokenContract, 'transfer', [account, 1], {
+    depBlock: false,
+    disabled: !account || !tokenContract || !sendToken,
   });
 
   const symbol = useMemo(() => sendToken?.symbol || '', [sendToken?.symbol]);
@@ -114,16 +118,18 @@ export const SendTokenTo = () => {
       console.log(error?.message);
     } finally {
       setTxLoading(false);
-      setValue('address', '');
-      setValue('amount', '');
-      trigger(['address', 'amount']);
+      // setValue('address', '');
+      // setValue('amount', '');
+      // trigger(['address', 'amount']);
     }
   };
 
   return (
     <div className="container mx-auto h-full overflow-y-scroll p-4 flex flex-col justify-between">
       <div>
-        <p className="text-2xl text-center mb-4 mt-5">Send {symbol}</p>
+        <p className="text-2xl text-center mb-4 mt-5">
+          Send {symbol} on {CHAIN_INFO[sendToken?.chainId || DEFAULT_CHAIN_ID].label}
+        </p>
         <div>
           <p className="font-medium text-gray-main">Address or domain</p>
           <div className="relative">
@@ -167,7 +173,7 @@ export const SendTokenTo = () => {
             </button>
           </div>
           <p className="text-gray-main text-xs font-medium mt-1">
-            fee: ~{weiToAmount(estimatedGas || 0, 10).toString()} {CHAIN_INFO[wallet.chainId].nativeCurrency.symbol}
+            fee: ~{weiToAmount(estimatedGas || 0, 10).toString()} {CHAIN_INFO[chainId].nativeCurrency.symbol}
           </p>
         </div>
         {/* // Data */}
@@ -175,6 +181,7 @@ export const SendTokenTo = () => {
           <TransactionInfoBlock
             hash={txResult?.result?.transactionHash}
             gasUsed={txResult?.result?.gasUsed.toString()}
+            chainId={sendToken?.chainId}
           />
         </div>
       </div>

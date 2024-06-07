@@ -1,7 +1,7 @@
 import retry from 'async-retry';
 import Big from 'big.js';
 import { Contract } from 'ethers';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { RETRY_OPTIONS_LOW } from 'shared/constants/retry-config';
 
@@ -34,13 +34,11 @@ export const useContractEstimatedGas = <
     gasLimitAdditional = GAS_LIMIT_ADDITIONAL.default,
   }: Options = {},
 ) => {
-  const blockDeps = useCallDeps();
-  const { account, chainId } = useWalletApp();
   const [estimatedGas, setEstimatedGas] = useState('0');
 
   useEffect(() => {
     const estimateGas = async () => {
-      if (!disabled && account && contract && chainId) {
+      if (!disabled && contract) {
         try {
           const estimatedGas = await retry(
             () => contract.estimateGas[methodName](...(inputs || [])),
@@ -48,6 +46,7 @@ export const useContractEstimatedGas = <
           );
 
           const gasLimitModified = Big(estimatedGas.toString()).mul(gasLimitMultiplier).add(gasLimitAdditional);
+
           setEstimatedGas(gasLimitModified.toFixed(0));
         } catch (e: any) {
           console.error('useContractEstimatedGas ERROR', methodName, inputs, e);
@@ -58,16 +57,7 @@ export const useContractEstimatedGas = <
     };
 
     estimateGas();
-  }, [
-    depBlock && blockDeps,
-    disabled,
-    account,
-    chainId,
-    gasLimitMultiplier,
-    gasLimitAdditional,
-    JSON.stringify(inputs),
-    methodName,
-  ]);
+  }, [disabled, gasLimitMultiplier, gasLimitAdditional, JSON.stringify(inputs), methodName]);
 
   return estimatedGas;
 };

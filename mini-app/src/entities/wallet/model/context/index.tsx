@@ -2,9 +2,7 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from '@ethersproject/wallet';
 import { ethers } from 'ethers';
 import React, { FC, useContext, useMemo } from 'react';
-import { toast } from 'react-toastify';
 
-import { CHAIN_INFO } from 'shared/constants/chain';
 import { RPC_PROVIDERS } from 'shared/constants/rpc';
 
 import { SupportedChainId } from '../types/chain';
@@ -45,8 +43,8 @@ export const WalletAppContextProvider: FC<{
     //
 
     const provider = RPC_PROVIDERS[chainId];
-    const wallet = new ethers.Wallet(pk).connect(provider);
-    toast.info(`Network ${CHAIN_INFO[chainId].label}`);
+    const wallet = new ethers.Wallet(pk);
+    // toast.info(`Network ${CHAIN_INFO[chainId].label}`);
     return {
       wallet: wallet,
       provider,

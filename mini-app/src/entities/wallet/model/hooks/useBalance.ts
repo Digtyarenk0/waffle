@@ -5,7 +5,7 @@ import { weiToAmount } from 'shared/utils/amount';
 
 import { useWalletApp } from '../context';
 
-export const useNativBalance = (provider?: any, address?: string) => {
+export const useNativeBalance = (provider?: any, address?: string) => {
   const { wallet, chainId } = useWalletApp();
   const [balance, setBalance] = useState<string>('0');
 

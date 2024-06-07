@@ -8,10 +8,11 @@ import { useTypedSelector } from 'entities/store/model/useStore';
 
 import { IToken } from 'features/tokens/model/store';
 
-import { HomeTokenItem } from 'pages/home/ui/token-item';
+import { HomeTokenItem } from 'shared/ui/token-item';
 
 export const SelectToken = () => {
   const navigate = useNavigate();
+  const prices = useTypedSelector((s) => s.tokens.prices);
   const tokens = useTypedSelector((s) => s.tokens.tokens || []);
   const [filteredTokens, setFilteredTokens] = useState<IToken[]>(tokens);
 
@@ -44,7 +45,7 @@ export const SelectToken = () => {
         {filteredTokens.map((token) => (
           <li key={token.address}>
             <button className="text-start w-full" onClick={() => toSend(token.address)}>
-              <HomeTokenItem {...token} />
+              <HomeTokenItem {...token} priceUSD={prices?.[token.address]} />
             </button>
           </li>
         ))}

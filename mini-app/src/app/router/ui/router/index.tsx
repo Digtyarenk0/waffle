@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { routes } from 'shared/constants/routes';
 
 import { useFetchTokensLists } from 'features/tokens/model/hooks/useTokenList';
-import { useFetchTokensBalance } from 'features/tokens/model/hooks/useTokensBalance';
+import { useFetchTokensBalance } from 'features/tokens/model/hooks/tokens-balance/useTokensBalance';
 import { ListsUpdater } from 'features/tokens/ui/list-updater';
 
 import { Footer } from 'widgets/footer';

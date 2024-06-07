@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { RETRY_OPTIONS_HIGH } from 'shared/constants/retry-config';
 
 import { useSingleCallMethod } from './useCallContract';
-import { useMulticallContract } from './useContract';
+import { useMulticallContract } from './useMulticallContract';
 
 interface MulticallBalancesResult {
   blockNumber: BigNumber;

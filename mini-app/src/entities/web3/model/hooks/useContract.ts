@@ -3,10 +3,12 @@ import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import { Contract } from 'ethers';
 import { useMemo } from 'react';
 
-import { useWalletApp } from 'entities/wallet/model/context';
+import { RPC_PROVIDERS } from 'shared/constants/rpc';
 
-import UniswapMulticallABI from '../abis/uniswap-multicall.json';
-import { DEAD_ADDRESS, UNISWAP_MULTICALL_ADDRESSES } from '../constant/adresess';
+import { useWalletApp } from 'entities/wallet/model/context';
+import { SupportedChainId } from 'entities/wallet/model/types/chain';
+
+import { DEAD_ADDRESS } from '../constant/adresess';
 import { ERC20, ERC20__factory } from '../contracts/typechain/erc20';
 import { ChainLinkAggregatorV3InterfaceABI } from '../types/chainlink';
 
@@ -41,7 +43,8 @@ export function getContract<T extends Contract = Contract>(
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
 
-  return new Contract(address, ABI, getProviderOrSigner(library, account) as any) as T;
+  const provider = getProviderOrSigner(library, account) as any;
+  return new Contract(address, ABI, provider) as T;
 }
 
 export const useContract = <T extends Contract>(
@@ -69,12 +72,38 @@ export const useContract = <T extends Contract>(
   }, [addressOrAddressMap, ABI, provider, account, chainId]);
 };
 
-export const useMulticallContract = () => {
-  return useContract(UNISWAP_MULTICALL_ADDRESSES, UniswapMulticallABI);
+export const useContractByChain = <T extends Contract>(
+  addressOrAddressMap:
+    | string
+    | {
+        [chainId: number]: string;
+      }
+    | null
+    | undefined,
+  ABI: any,
+  chainId: SupportedChainId,
+  account?: string,
+): T | null => {
+  return useMemo(() => {
+    if (!addressOrAddressMap || !ABI || !chainId) return null;
+    const address = typeof addressOrAddressMap === 'string' ? addressOrAddressMap : addressOrAddressMap[chainId];
+
+    if (!address) return null;
+    try {
+      return getContract<T>(address, ABI, RPC_PROVIDERS[chainId], account);
+    } catch (error) {
+      console.error('Failed to create contract', error);
+      return null;
+    }
+  }, [addressOrAddressMap, ABI, account, chainId]);
 };
 
-export const useERC20Contract = (erc20Address: string | null | undefined) => {
-  return useContract<ERC20>(erc20Address, ERC20__factory.abi);
+export const useERC20Contract = (
+  erc20Address: string | null | undefined,
+  chainId: SupportedChainId,
+  account?: string,
+) => {
+  return useContractByChain<ERC20>(erc20Address, ERC20__factory.abi, chainId, account);
 };
 
 export const useChainlinkContract = (feeAddress: string) => {
