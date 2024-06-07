@@ -7,7 +7,6 @@ import useInterval from 'shared/hooks/useInterval';
 import { useIsWindowVisible } from 'shared/hooks/useIsWindowVisible';
 
 import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStore';
-import { useWalletApp } from 'entities/wallet/model/context';
 
 import { DEFAULT_LIST_OF_LISTS, UNSUPPORTED_LIST_URLS } from 'features/tokens/model/constants';
 import { useAllLists } from 'features/tokens/model/helper/list-helper';
@@ -19,7 +18,6 @@ import TokenSafetyLookupTable from '../../model/helper/token-safety-lookup';
 
 export const ListsUpdater = (): null => {
   const dispatch = useTypedDispatch();
-  const { provider, chainId } = useWalletApp();
 
   const isWindowVisible = useIsWindowVisible();
 
@@ -38,21 +36,19 @@ export const ListsUpdater = (): null => {
       urls
         ?.map((i) => {
           const tokensUrlData = listDebounce.byUrl[i].current?.tokens;
-          const currentChainTokens = tokensUrlData
-            ?.filter((t) => t.chainId === chainId)
-            .map((t) => ({
-              name: t.name,
-              symbol: t.symbol,
-              logo: t.logoURI || '',
-              decimals: t.decimals,
-              address: t.address,
-              chainId: t.chainId,
-            }));
+          const currentChainTokens = tokensUrlData?.map((t) => ({
+            name: t.name,
+            symbol: t.symbol,
+            logo: t.logoURI || '',
+            decimals: t.decimals,
+            address: t.address,
+            chainId: t.chainId,
+          }));
           return currentChainTokens;
         })
         .filter((i) => !!i) || [];
     return tokensByUrls.flat() as ITokenList[];
-  }, [listDebounce, chainId]);
+  }, [listDebounce]);
 
   const tokensDebounce = useDebounce(tokens, 200).value;
 
@@ -67,7 +63,7 @@ export const ListsUpdater = (): null => {
   }, [fetchList, isWindowVisible]);
 
   // fetch all lists every 10 minutes, but only after we initialize provider
-  useInterval(fetchAllListsCallback, provider ? ms('10m') : null);
+  useInterval(fetchAllListsCallback, ms('10m'));
 
   useEffect(() => {
     // whenever a list is not loaded and not loading, try again to load it

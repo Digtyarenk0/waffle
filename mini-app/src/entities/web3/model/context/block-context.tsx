@@ -1,20 +1,18 @@
-import { Provider } from '@ethersproject/providers';
-import retry from 'async-retry';
 import React, { useState, useEffect, useCallback, ReactNode } from 'react';
 
-import { RETRY_OPTIONS_HIGH } from 'shared/constants/retry-config';
+import { RPC_PROVIDERS } from 'shared/constants/rpc';
 import { useIsWindowVisible } from 'shared/hooks/useIsWindowVisible';
 
-import { useWalletApp } from 'entities/wallet/model/context';
+import { SupportedChainId } from 'entities/wallet/model/types/chain';
+
+import { getBlockNumber } from './helper';
 
 const BlockContext = React.createContext<number | undefined>(undefined);
 
-export function getBlockNumber(provider: Provider): Promise<number> {
-  return retry(() => provider.getBlockNumber(), RETRY_OPTIONS_HIGH);
-}
+const activeChainId = SupportedChainId.POLYGON;
+const provider = RPC_PROVIDERS[activeChainId];
 
 const BlockContextProvider = ({ children }: { children: ReactNode }) => {
-  const { chainId: activeChainId, provider } = useWalletApp();
   const isWindowVisible = useIsWindowVisible();
 
   const [{ chainId, block }, setChainBlock] = useState<{ chainId?: number; block?: number }>({

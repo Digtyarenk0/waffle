@@ -3,12 +3,11 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { routes } from 'shared/constants/routes';
+import { HomeTokenItem } from 'shared/ui/token-item';
 
 import { useTypedSelector } from 'entities/store/model/useStore';
 
 import { IToken } from 'features/tokens/model/store';
-
-import { HomeTokenItem } from 'shared/ui/token-item';
 
 export const SelectToken = () => {
   const navigate = useNavigate();

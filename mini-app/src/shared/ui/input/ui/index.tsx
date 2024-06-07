@@ -1,6 +1,6 @@
 import cs from 'classnames';
-import { InputHTMLAttributes, memo, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import { UseFormRegisterReturn, FieldErrors, UseFormReset, FieldValues } from 'react-hook-form';
+import { InputHTMLAttributes, memo, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { UseFormRegisterReturn, FieldErrors } from 'react-hook-form';
 import { TiDelete } from 'react-icons/ti';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

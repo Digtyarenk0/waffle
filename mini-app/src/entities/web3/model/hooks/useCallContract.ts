@@ -6,13 +6,14 @@ import { useState, useRef, useCallback, useMemo } from 'react';
 import { RETRY_OPTIONS_LOW } from 'shared/constants/retry-config';
 import { useSyncEffect } from 'shared/hooks/useSyncEffect';
 
-import { useWalletApp } from 'entities/wallet/model/context';
+import { DEFAULT_CHAIN_ID, SupportedChainId } from 'entities/wallet/model/types/chain';
 
 import { ContractMethodsType, MethodParametersType, MethodReturnType } from '../types/contracts';
 
 import { useCallDeps } from './useCallDeps';
 
 interface Option<T> {
+  chainId?: SupportedChainId;
   depBlock?: boolean; // Update information with each new block
   defaultValue?: T; // The default value to be returned during a request or after an error
   disabled?: boolean; // In some cases we need to stop receiving updates
@@ -40,13 +41,17 @@ export const useSingleCallMethod = <
   contract: C | null | undefined,
   methodName: M,
   inputs: P,
-  { depBlock = false, disabled = false, defaultValue, resetIfDisabled = true, extraDeps = [] }: Option<Default> = {},
+  {
+    chainId = DEFAULT_CHAIN_ID,
+    depBlock = false,
+    disabled = false,
+    defaultValue,
+    resetIfDisabled = true,
+    extraDeps = [],
+  }: Option<Default> = {},
   retryOptions: Options = RETRY_OPTIONS_LOW,
-  chain?: number,
 ): UseSingleCallResult<Result | Default, P | null> => {
   const blockDeps = useCallDeps();
-  const chainProvider = useWalletApp().chainId;
-  const chainId = chain || chainProvider;
   const [cachedDefaultValue] = useState<Default>(defaultValue ?? (null as unknown as Default));
   const [result, setResult] = useState<{ [chainId: number]: Result | Default }>({});
   const [argsCache, setArgsCache] = useState<Record<number, P | null>>({});
