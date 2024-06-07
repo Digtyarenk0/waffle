@@ -8,6 +8,7 @@ import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 
 import { RETRY_OPTIONS_TRANSACTION } from 'shared/constants/retry-config';
+import { RPC_PROVIDERS } from 'shared/constants/rpc';
 
 import { useTypedDispatch } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
@@ -33,7 +34,7 @@ export const useSingleSendMethod = <
   methodName: M,
   options?: UseSingleSendOptions,
 ) => {
-  const { account, chainId, wallet } = useWalletApp();
+  const { account, wallet } = useWalletApp();
   const dispatch = useTypedDispatch();
   const {
     showErrorToast = true,
@@ -44,7 +45,8 @@ export const useSingleSendMethod = <
   return useCallback(
     async (...inputs: P): Promise<TransactionState> => {
       if (account) {
-        if (contract && chainId && wallet) {
+        if (contract && wallet) {
+          const chainId: SupportedChainId = (await contract.provider.getNetwork()).chainId;
           try {
             const txData: Deferrable<TransactionRequest> = {
               to: contract.address,
@@ -54,7 +56,7 @@ export const useSingleSendMethod = <
               // let overrides: Overrides = {};
 
               const gasPrice = await contract.provider.getGasPrice();
-              // Увеличение цены газа на 10%
+              // Up gas price 10%
               txData.gasPrice = gasPrice.mul(BigNumber.from(110)).div(BigNumber.from(100));
 
               const estimateGas: BigNumber = (await retry(async (bail) => {
@@ -79,8 +81,9 @@ export const useSingleSendMethod = <
             }
 
             txData.data = contract.interface.encodeFunctionData(methodName, inputs);
-            txData.nonce = await wallet.getTransactionCount();
-            const tx = await wallet.sendTransaction(txData);
+            const connectedWallet = wallet.connect(RPC_PROVIDERS[chainId]);
+            txData.nonce = await connectedWallet.getTransactionCount();
+            const tx = await connectedWallet.sendTransaction(txData);
             // debugger;
             // const tx = await contract.functions[methodName](...inputs);
             const result: ContractReceipt = await tx.wait();
@@ -109,7 +112,7 @@ export const useSingleSendMethod = <
         error: null,
       };
     },
-    [account, contract, chainId, wallet, gasLimitMultiplier, gasLimitAdditional, showErrorToast, methodName, dispatch],
+    [account, contract, wallet, gasLimitMultiplier, gasLimitAdditional, showErrorToast, methodName, dispatch],
   );
 };
 

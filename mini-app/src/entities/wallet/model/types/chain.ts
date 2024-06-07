@@ -3,6 +3,8 @@ export enum SupportedChainId {
   ARBITRUM_SEPOLIA = 421614,
 }
 
+export const DEFAULT_CHAIN_ID: SupportedChainId = SupportedChainId.POLYGON;
+
 export const MAINNET_CHAIN_IDS: Record<SupportedChainId, boolean> = {
   [SupportedChainId.POLYGON]: false,
   [SupportedChainId.ARBITRUM_SEPOLIA]: false,

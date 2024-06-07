@@ -72,7 +72,7 @@ export const useContract = <T extends Contract>(
   }, [addressOrAddressMap, ABI, provider, account, chainId]);
 };
 
-export const useContractCallChain = <T extends Contract>(
+export const useContractByChain = <T extends Contract>(
   addressOrAddressMap:
     | string
     | {
@@ -82,6 +82,7 @@ export const useContractCallChain = <T extends Contract>(
     | undefined,
   ABI: any,
   chainId: SupportedChainId,
+  account?: string,
 ): T | null => {
   return useMemo(() => {
     if (!addressOrAddressMap || !ABI || !chainId) return null;
@@ -89,16 +90,20 @@ export const useContractCallChain = <T extends Contract>(
 
     if (!address) return null;
     try {
-      return getContract<T>(address, ABI, RPC_PROVIDERS[chainId]);
+      return getContract<T>(address, ABI, RPC_PROVIDERS[chainId], account);
     } catch (error) {
       console.error('Failed to create contract', error);
       return null;
     }
-  }, [addressOrAddressMap, ABI, chainId, chainId]);
+  }, [addressOrAddressMap, ABI, account, chainId]);
 };
 
-export const useERC20Contract = (erc20Address: string | null | undefined) => {
-  return useContract<ERC20>(erc20Address, ERC20__factory.abi);
+export const useERC20Contract = (
+  erc20Address: string | null | undefined,
+  chainId: SupportedChainId,
+  account?: string,
+) => {
+  return useContractByChain<ERC20>(erc20Address, ERC20__factory.abi, chainId, account);
 };
 
 export const useChainlinkContract = (feeAddress: string) => {

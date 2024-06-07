@@ -5,7 +5,7 @@ import useDebounce from 'shared/hooks/useDebounce';
 
 import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
-import { SupportedChainId } from 'entities/wallet/model/types/chain';
+import { DEFAULT_CHAIN_ID, SupportedChainId } from 'entities/wallet/model/types/chain';
 import { ZERO_ADDRESS } from 'entities/web3/model/constant/adresess';
 import { useSingleCallMethod } from 'entities/web3/model/hooks/useCallContract';
 import { useCallDeps } from 'entities/web3/model/hooks/useCallDeps';
@@ -53,7 +53,7 @@ export const useFetchTokensBalance = () => {
   const { account } = useWalletApp();
 
   const blockDeps = useCallDeps();
-  const erc20 = useERC20Contract(ZERO_ADDRESS);
+  const erc20 = useERC20Contract(ZERO_ADDRESS, DEFAULT_CHAIN_ID);
 
   const multicall = useMulticallContractChains();
 
@@ -73,7 +73,6 @@ export const useFetchTokensBalance = () => {
   );
 
   const response = useCallsMethod(calls, disabled);
-
   const result = useMemo(() => {
     if (!decode || disabled || !calls) return;
     const chainResult = {} as Record<SupportedChainId, BigNumber[]>;

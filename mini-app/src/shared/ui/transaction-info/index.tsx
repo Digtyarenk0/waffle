@@ -4,17 +4,16 @@ import { CHAIN_INFO } from 'shared/constants/chain';
 import { weiToAmount } from 'shared/utils/amount';
 import { truncateMiddle } from 'shared/utils/text';
 
-import { useWalletApp } from 'entities/wallet/model/context';
+import { DEFAULT_CHAIN_ID, SupportedChainId } from 'entities/wallet/model/types/chain';
 
 interface TransactionInfoBlock {
   hash?: string;
   gasUsed?: string;
+  chainId?: SupportedChainId;
 }
 
 export const TransactionInfoBlock = (props: TransactionInfoBlock) => {
-  const { hash, gasUsed } = props;
-
-  const { chainId } = useWalletApp();
+  const { hash, gasUsed, chainId = DEFAULT_CHAIN_ID } = props;
 
   const txLink = `${CHAIN_INFO[chainId].explorer[0]}tx/${hash}`;
 
