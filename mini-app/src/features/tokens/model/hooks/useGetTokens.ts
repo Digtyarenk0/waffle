@@ -35,14 +35,11 @@ export const fetchUniswapTokenList = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: UNISWAP_TOKENS_LIST_URL }),
   endpoints: (builder) => ({
     fetchUniswapTokensList: builder.query<UniIpfsToken[], number>({
-      query: () => ({
+      query: (_) => ({
         url: '',
       }),
-      transformResponse: (response: UniTokensListResponse, _, chainId) => {
-        return response.tokens.filter(
-          // (t) => t.chainId === chainId && t.symbol !== CHAIN_INFO[chainId]?.nativeCurrency?.symbol,
-          (t) => t.symbol !== CHAIN_INFO[chainId]?.nativeCurrency?.symbol,
-        );
+      transformResponse: (response: UniTokensListResponse) => {
+        return response.tokens.filter((t) => t.symbol !== CHAIN_INFO[t.chainId]?.nativeCurrency?.symbol);
       },
     }),
   }),

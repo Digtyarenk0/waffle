@@ -12,6 +12,7 @@ interface TransactionInfoBlock {
   chainId?: SupportedChainId;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const TransactionInfoBlock = (props: TransactionInfoBlock) => {
   const { hash, gasUsed, chainId = DEFAULT_CHAIN_ID } = props;
 

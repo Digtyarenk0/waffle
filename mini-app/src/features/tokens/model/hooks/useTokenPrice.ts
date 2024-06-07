@@ -27,7 +27,6 @@ const chainId = SupportedChainId.POLYGON;
 
 export const useFeedTokens = () => {
   const dispatch = useTypedDispatch();
-  const { provider } = useWalletApp();
 
   const blockDeps = useCallDeps();
   const tokens = useTypedSelector((s) => s.tokens.tokens);
@@ -44,8 +43,8 @@ export const useFeedTokens = () => {
   const calls = useMemo(() => feedsTokens?.map(({ call }) => call), [feedsTokens]);
 
   const disabled = useMemo(
-    () => !provider || !multicallContract || !fee || !calls || calls.length === 0,
-    [provider, multicallContract, fee, calls?.length],
+    () => !multicallContract || !fee || !calls || calls.length === 0,
+    [multicallContract, fee, calls?.length],
   );
 
   const multicallRes = useSingleCallMethod(multicallContract, 'multicall', [calls], {

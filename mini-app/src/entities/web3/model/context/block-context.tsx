@@ -3,17 +3,16 @@ import React, { useState, useEffect, useCallback, ReactNode } from 'react';
 import { RPC_PROVIDERS } from 'shared/constants/rpc';
 import { useIsWindowVisible } from 'shared/hooks/useIsWindowVisible';
 
-import { useWalletApp } from 'entities/wallet/model/context';
 import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
 import { getBlockNumber } from './helper';
 
 const BlockContext = React.createContext<number | undefined>(undefined);
 
-const provider = RPC_PROVIDERS[SupportedChainId.POLYGON];
+const activeChainId = SupportedChainId.POLYGON;
+const provider = RPC_PROVIDERS[activeChainId];
 
 const BlockContextProvider = ({ children }: { children: ReactNode }) => {
-  const { chainId: activeChainId } = useWalletApp();
   const isWindowVisible = useIsWindowVisible();
 
   const [{ chainId, block }, setChainBlock] = useState<{ chainId?: number; block?: number }>({
