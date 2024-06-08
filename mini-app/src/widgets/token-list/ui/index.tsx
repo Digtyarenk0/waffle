@@ -19,7 +19,7 @@ export const TokenList = (props: TokenListProps) => {
   const sorted = useMemo(() => {
     return tokens
       ?.map((t) => {
-        const priceUSD = t?.priceUSD || prices?.[t.address];
+        const priceUSD = t?.priceUSD || prices?.[t.symbol];
         return { ...t, priceUSD };
       })
       .sort(sortTokensByBalancePrice);

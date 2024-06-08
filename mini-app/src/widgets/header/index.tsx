@@ -20,9 +20,9 @@ export const Header = () => {
     const balances: Big[] = [];
 
     tokensWithBalance?.forEach((t) => {
-      if (!prices?.[t.address]) return;
+      if (!prices?.[t.symbol]) return;
       const balance = weiToAmount(t.balanceWei || 0, t.decimals || 18);
-      const price = prices[t.address] as string;
+      const price = prices[t.symbol] as string;
       if (balance.gt(0)) balances.push(Big(price).mul(balance));
     });
 

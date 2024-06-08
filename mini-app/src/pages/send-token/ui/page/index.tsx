@@ -16,7 +16,7 @@ export const SendToken = () => {
   const sendToken = useMemo(() => {
     const token = tokens.find((t) => t.address === paramSendToken);
     if (!token) return;
-    return { ...token, priceUSD: prices?.[token.address] };
+    return { ...token, priceUSD: prices?.[token.symbol] };
   }, [tokens, prices, paramSendToken]);
 
   if (!sendToken) return <>loading</>;

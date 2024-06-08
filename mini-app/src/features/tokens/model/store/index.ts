@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Big from 'big.js';
 
 import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
@@ -14,7 +13,7 @@ export interface ITokenList {
   chainId: SupportedChainId;
 }
 export interface ITokenPrice {
-  [address: string]: string; // token address: priceUSD
+  [symbol: string]: string; // token address: priceUSD
 }
 
 export interface IToken extends ITokenList {
@@ -47,7 +46,7 @@ export const tokensSlice = createSlice({
     },
     addTokensPrices: (state, action: PayloadAction<ITokenPrice[]>) => {
       state.prices = action.payload.reduce((acc, item) => {
-        acc[item.address] = item.priceUSD;
+        acc[item.symbol] = item.priceUSD;
         return acc;
       }, {} as ITokenPrice);
     },
