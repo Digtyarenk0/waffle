@@ -102,7 +102,7 @@ export const ListsUpdater = (): null => {
   useEffect(() => {
     if (tokensDebounce) {
       console.log('Tokens from all', tokensDebounce.length);
-      dispatch(addTokensToList(tokensDebounce.slice(0, 400)));
+      dispatch(addTokensToList(tokensDebounce));
     }
   }, [tokensDebounce]);
 

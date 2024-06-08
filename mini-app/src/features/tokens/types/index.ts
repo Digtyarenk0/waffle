@@ -3,6 +3,6 @@ import { MulticallCallData } from 'entities/web3/model/types/contracts';
 
 import { ITokenList } from '../model/store';
 
-export type CallDataByTokenList =
-  | Record<SupportedChainId, { calls: MulticallCallData[]; tokens: ITokenList[] } | null>
-  | undefined;
+export type RecordCalls = { calls: MulticallCallData[]; tokens: ITokenList[] };
+
+export type CallDataByTokenList = Record<SupportedChainId, RecordCalls | null> | undefined;

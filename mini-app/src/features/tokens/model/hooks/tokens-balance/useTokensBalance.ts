@@ -1,4 +1,5 @@
 import { BigNumber } from 'ethers';
+import _ from 'lodash';
 import { useCallback, useEffect, useMemo } from 'react';
 
 import useDebounce from 'shared/hooks/useDebounce';
@@ -7,7 +8,7 @@ import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStor
 import { useWalletApp } from 'entities/wallet/model/context';
 import { DEFAULT_CHAIN_ID, SupportedChainId } from 'entities/wallet/model/types/chain';
 import { ZERO_ADDRESS } from 'entities/web3/model/constant/adresess';
-import { useSingleCallMethod } from 'entities/web3/model/hooks/useCallContract';
+import { useSingleCallMethodMulti } from 'entities/web3/model/hooks/useCallContractMulti';
 import { useCallDeps } from 'entities/web3/model/hooks/useCallDeps';
 import { useERC20Contract } from 'entities/web3/model/hooks/useContract';
 import { useMulticallContractChains } from 'entities/web3/model/hooks/useMulticallContract';
@@ -19,8 +20,24 @@ import { IToken, updateTokens } from '../../store';
 
 import { CALL_DATA, callDataByTokenList, mapBalanceResult, parseTokensBalanceMulticallResult } from './helper-balance';
 
-const gasLimit = 1000000;
 const callData = CALL_DATA.balanceOf;
+const gasLimit = 1000000;
+const CHUNK_SIZE = 400;
+
+const getChunks = (calls: CallDataByTokenList, chain: SupportedChainId) => {
+  if (!calls?.[chain]?.calls) return undefined;
+  return _.chunk(calls?.[chain]?.calls, CHUNK_SIZE);
+};
+
+const parseMultiRes = (result?: MulticallBalancesResult[]): MulticallBalancesResult | undefined => {
+  if (!result?.[0]) return;
+  const parsed = {
+    blockNumber: result?.[0].blockNumber,
+    returnData: [],
+  } as MulticallBalancesResult;
+  result?.forEach((i) => (parsed.returnData = parsed.returnData.concat(i.returnData)));
+  return parsed;
+};
 
 const useCallsMethod = (
   calls: CallDataByTokenList,
@@ -28,22 +45,25 @@ const useCallsMethod = (
 ): Record<SupportedChainId, MulticallBalancesResult | undefined> => {
   const multicall = useMulticallContractChains();
 
-  const polygonCall = calls?.[SupportedChainId.POLYGON]?.calls;
-  const arbitrumCall = calls?.[SupportedChainId.ARBITRUM_SEPOLIA]?.calls;
+  const polygonCall = useMemo(() => getChunks(calls, SupportedChainId.POLYGON), [calls]);
+  const arbitrumCall = useMemo(() => getChunks(calls, SupportedChainId.ARBITRUM_SEPOLIA), [calls]);
 
-  const polygon = useSingleCallMethod(multicall?.[SupportedChainId.POLYGON], 'multicall', [polygonCall], {
+  const polygon = useSingleCallMethodMulti(multicall?.[SupportedChainId.POLYGON], 'multicall', polygonCall, {
     depBlock: true,
     disabled: disabled || !polygonCall,
-  }).result as MulticallBalancesResult | undefined;
-  const arbitrum = useSingleCallMethod(multicall?.[SupportedChainId.ARBITRUM_SEPOLIA], 'multicall', [arbitrumCall], {
+  }).result as MulticallBalancesResult[] | undefined;
+  const arbitrum = useSingleCallMethodMulti(multicall?.[SupportedChainId.ARBITRUM_SEPOLIA], 'multicall', arbitrumCall, {
     depBlock: true,
     disabled: disabled || !arbitrumCall,
-  }).result as MulticallBalancesResult | undefined;
+  }).result as MulticallBalancesResult[] | undefined;
 
-  return {
-    [SupportedChainId.POLYGON]: polygon,
-    [SupportedChainId.ARBITRUM_SEPOLIA]: arbitrum,
-  };
+  return useMemo(
+    () => ({
+      [SupportedChainId.POLYGON]: parseMultiRes(polygon),
+      [SupportedChainId.ARBITRUM_SEPOLIA]: parseMultiRes(arbitrum),
+    }),
+    [arbitrum, polygon],
+  );
 };
 
 export const useFetchTokensBalance = () => {
@@ -73,6 +93,7 @@ export const useFetchTokensBalance = () => {
   );
 
   const response = useCallsMethod(calls, disabled);
+
   const result = useMemo(() => {
     if (!decode || disabled || !calls) return;
     const chainResult = {} as Record<SupportedChainId, BigNumber[]>;
