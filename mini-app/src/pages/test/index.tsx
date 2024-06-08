@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { JsonRpcProvider } from '@ethersproject/providers';
 import {
   useCloudStorage,
   useExpand,
@@ -7,7 +8,7 @@ import {
   WebAppProvider,
 } from '@vkruglikov/react-telegram-web-app';
 import { ConfigProvider, theme } from 'antd';
-import { ethers, JsonRpcProvider, Wallet } from 'ethers';
+import { ethers, Wallet, Contract } from 'ethers';
 import React, { DispatchWithoutAction, FC, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import 'antd/dist/reset.css';
