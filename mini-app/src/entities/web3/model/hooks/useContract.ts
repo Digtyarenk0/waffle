@@ -8,18 +8,11 @@ import { RPC_PROVIDERS } from 'shared/constants/rpc';
 import { useWalletApp } from 'entities/wallet/model/context';
 import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
+import { isAddress } from 'features/tokens/types/token-from-list';
+
 import { DEAD_ADDRESS } from '../constant/adresess';
 import { ERC20, ERC20__factory } from '../contracts/typechain/erc20';
 import { ChainLinkAggregatorV3InterfaceABI } from '../types/chainlink';
-
-// returns the checksummed address if the address is valid, otherwise returns false
-export function isAddress(value: any): string | false {
-  try {
-    return getAddress(value);
-  } catch {
-    return false;
-  }
-}
 
 // account is not optional
 export function getSigner(library: JsonRpcProvider, account: string): JsonRpcSigner {

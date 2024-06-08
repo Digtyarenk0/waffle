@@ -4,7 +4,6 @@ import useDebounce from 'shared/hooks/useDebounce';
 import { weiToAmount } from 'shared/utils/amount';
 
 import { useTypedDispatch, useTypedSelector } from 'entities/store/model/useStore';
-import { useWalletApp } from 'entities/wallet/model/context';
 import { SupportedChainId } from 'entities/wallet/model/types/chain';
 import { MOCK_ADDRESS } from 'entities/web3/model/constant/adresess';
 import { useSingleCallMethod } from 'entities/web3/model/hooks/useCallContract';
@@ -84,7 +83,7 @@ export const useFeedTokens = () => {
       const pricesTokens = result.map((v, i) => {
         const data = feedsTokens[i];
         return {
-          address: data.token.address,
+          symbol: data.token.symbol,
           priceUSD: weiToAmount(v.answer, data.feed.decimals).toString(),
         } as ITokenPrice;
       });
