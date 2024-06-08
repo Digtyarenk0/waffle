@@ -3,7 +3,7 @@ import Big from 'big.js';
 
 import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
-import { getUniqueListChainsBy } from '../helper';
+import { getUniqueListChainsBy, sortTokensByBalanceWei } from '../helper';
 
 export interface ITokenList {
   name: string;
@@ -19,6 +19,7 @@ export interface ITokenPrice {
 
 export interface IToken extends ITokenList {
   balanceWei: string; // user balance amount
+  priceUSD?: string; // price from feeds
 }
 
 export interface TokensState {
@@ -42,11 +43,7 @@ export const tokensSlice = createSlice({
     },
     updateTokens: (state, action: PayloadAction<IToken[]>) => {
       const tokens = action.payload;
-      state.tokens = tokens.sort((a, b) => {
-        const balanceA = a.balanceWei || 0;
-        const balanceB = b.balanceWei || 0;
-        return Big(balanceB).minus(balanceA).toNumber();
-      });
+      state.tokens = tokens.sort(sortTokensByBalanceWei);
     },
     addTokensPrices: (state, action: PayloadAction<ITokenPrice[]>) => {
       state.prices = action.payload.reduce((acc, item) => {

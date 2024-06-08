@@ -1,28 +1,14 @@
-import { useMemo } from 'react';
 import { IoIosSend } from 'react-icons/io';
 import { MdOutlineCallReceived } from 'react-icons/md';
 import { TbProgressHelp } from 'react-icons/tb';
 
 import { routes } from 'shared/constants/routes';
 import { ButtonRound } from 'shared/ui/button-round';
-import { HomeTokenItem } from 'shared/ui/token-item';
-
-import { useTypedSelector } from 'entities/store/model/useStore';
-
-import { useFeedTokens } from 'features/tokens/model/hooks/useTokenPrice';
 
 import { Header } from 'widgets/header';
+import { TokenList } from 'widgets/token-list/ui';
 
 export const HomePage = () => {
-  const prices = useTypedSelector((s) => s.tokens.prices);
-  const tokensWithBalance = useTypedSelector((s) => s.tokens.tokens);
-
-  useFeedTokens();
-
-  const tokens = useMemo(() => {
-    return tokensWithBalance?.map((t) => <HomeTokenItem {...t} key={t.address} priceUSD={prices?.[t.address]} />);
-  }, [tokensWithBalance]);
-
   return (
     <div className="h-full overflow-y-scroll">
       <div className="h-40">
@@ -41,7 +27,9 @@ export const HomePage = () => {
         <ButtonRound ico={<LuMoreVertical size="25px" />} route="" text="More" /> */}
         </div>
       </div>
-      <div className="mt-2 px-4">{tokens}</div>
+      <div className="mt-2 px-4">
+        <TokenList />
+      </div>
     </div>
   );
 };

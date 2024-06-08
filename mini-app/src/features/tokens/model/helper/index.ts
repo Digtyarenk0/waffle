@@ -1,6 +1,10 @@
+import Big from 'big.js';
+
+import { weiToAmount } from 'shared/utils/amount';
+
 import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
-import { ITokenList } from '../store';
+import { IToken, ITokenList } from '../store';
 
 export const getUniqueListBy = <T extends ITokenList, K extends keyof ITokenList>(arr: T[], key: K): T[] => {
   const seen = new Set();
@@ -31,4 +35,18 @@ export const getUniqueListChainsBy = <T extends ITokenList, K extends keyof ITok
     .flat();
 
   return tokens;
+};
+
+export const sortTokensByBalanceWei = (a: IToken, b: IToken) => {
+  const balanceA = a.balanceWei || 0;
+  const balanceB = b.balanceWei || 0;
+  return Big(balanceB).minus(balanceA).toNumber();
+};
+
+export const sortTokensByBalancePrice = (a: IToken, b: IToken) => {
+  const balanceA = weiToAmount(a.balanceWei || 0, a.decimals || 18);
+  const sumA = Big(a?.priceUSD || 0).mul(balanceA);
+  const balanceB = weiToAmount(b.balanceWei || 0, b.decimals || 18);
+  const sumB = Big(b.priceUSD || 0).mul(balanceB);
+  return Big(sumB).minus(sumA).toNumber();
 };
