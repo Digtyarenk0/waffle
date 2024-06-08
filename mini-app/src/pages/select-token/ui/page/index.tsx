@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { routes } from 'shared/constants/routes';
-import { HomeTokenItem } from 'shared/ui/token-item';
 
 import { useTypedSelector } from 'entities/store/model/useStore';
 
 import { IToken } from 'features/tokens/model/store';
 
+import { TokenList } from 'widgets/token-list/ui';
+
 export const SelectToken = () => {
   const navigate = useNavigate();
-  const prices = useTypedSelector((s) => s.tokens.prices);
   const tokens = useTypedSelector((s) => s.tokens.tokens || []);
   const [filteredTokens, setFilteredTokens] = useState<IToken[]>(tokens);
 
@@ -41,13 +41,7 @@ export const SelectToken = () => {
         />
       </form>
       <ul>
-        {filteredTokens.map((token) => (
-          <li key={token.address}>
-            <button className="text-start w-full" onClick={() => toSend(token.address)}>
-              <HomeTokenItem {...token} priceUSD={prices?.[token.address]} />
-            </button>
-          </li>
-        ))}
+        <TokenList tokens={filteredTokens} tokenOnClick={toSend} />
       </ul>
     </div>
   );
