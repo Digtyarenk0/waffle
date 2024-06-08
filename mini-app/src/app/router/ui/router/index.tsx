@@ -12,7 +12,7 @@ import { Footer } from 'widgets/footer';
 import { HomePage } from 'pages/home/ui/page';
 import { ReceivePage } from 'pages/receive/ui/page';
 import { SelectToken } from 'pages/select-token/ui/page';
-import { SendTokenTo } from 'pages/send-token/ui/page';
+import { SendToken } from 'pages/send-token/ui/page';
 
 export const RouterApp = () => {
   useFetchTokensLists();
@@ -26,7 +26,7 @@ export const RouterApp = () => {
           <Route path={routes.main} element={<HomePage />} />
           <Route path={routes.receive} element={<ReceivePage />} />
           <Route path={routes.select_token} element={<SelectToken />} />
-          <Route path={routes.send_token} element={<SendTokenTo />} />
+          <Route path={routes.send_token} element={<SendToken />} />
           <Route path="*" element={<Navigate to={routes.main} replace />} />
         </Routes>
       </div>

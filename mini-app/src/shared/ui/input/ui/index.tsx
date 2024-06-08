@@ -1,5 +1,5 @@
 import cs from 'classnames';
-import { InputHTMLAttributes, memo, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { InputHTMLAttributes, memo, useId, useMemo, useRef, useState } from 'react';
 import { UseFormRegisterReturn, FieldErrors } from 'react-hook-form';
 import { TiDelete } from 'react-icons/ti';
 
@@ -13,13 +13,13 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = memo(function Input(props: InputProps) {
-  const { register, errors, className, placeholder = '', reset, example = '', classNameInput, ...otherProps } = props;
+  const { register, errors, className, placeholder = '', reset, classNameInput, ...otherProps } = props;
 
   const uID = useId();
   const ref = useRef<HTMLInputElement>();
 
   const [isFocus, setIsFocus] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+  // const [isActive, setIsActive] = useState(false);
 
   const onBlurCapture = () => setIsFocus(false);
   const onFocus = () => setIsFocus(true);
@@ -37,9 +37,9 @@ export const Input = memo(function Input(props: InputProps) {
     if (!value) return true;
   }, [isFocus, value]);
 
-  useEffect(() => {
-    value || isFocus ? setIsActive(true) : setIsActive(false);
-  }, [value, isFocus]);
+  // useEffect(() => {
+  //   value || isFocus ? setIsActive(true) : setIsActive(false);
+  // }, [value, isFocus]);
 
   return (
     <div className={cs('relative text-white-main', className)}>
@@ -57,7 +57,8 @@ export const Input = memo(function Input(props: InputProps) {
           <TiDelete className="absolute top-2 right-2 text-gray-main" size="25px" />
         </button>
       )}
-      {isShowPlaceholder && <p className="absolute top-2 left-4">{placeholder}</p>}
+      {isShowPlaceholder && <p className="absolute top-2 left-4 text-gray-500">{placeholder}</p>}
+      {error && <p className="mt-1 text-red-500">{error}</p>}
     </div>
   );
 });

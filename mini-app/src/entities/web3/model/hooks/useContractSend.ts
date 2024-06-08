@@ -37,7 +37,7 @@ export const useSingleSendMethod = <
   const { account, wallet } = useWalletApp();
   const dispatch = useTypedDispatch();
   const {
-    showErrorToast = true,
+    showErrorToast = false,
     gasLimitMultiplier = GAS_LIMIT_MULTIPLIER.default,
     gasLimitAdditional = GAS_LIMIT_ADDITIONAL.default,
   } = options || {};
@@ -84,8 +84,6 @@ export const useSingleSendMethod = <
             const connectedWallet = wallet.connect(RPC_PROVIDERS[chainId]);
             txData.nonce = await connectedWallet.getTransactionCount();
             const tx = await connectedWallet.sendTransaction(txData);
-            // debugger;
-            // const tx = await contract.functions[methodName](...inputs);
             const result: ContractReceipt = await tx.wait();
             dispatch(incTxCount());
             return {
@@ -98,7 +96,7 @@ export const useSingleSendMethod = <
             showErrorToast && parseToastError(e, chainId);
             return {
               result: null,
-              error: e,
+              error: parsedError?.message || parsedError,
             };
           }
         } else {
@@ -123,6 +121,7 @@ const parseError = (error: any, chainId: number | undefined) => {
       return error?.code === 'UNPREDICTABLE_GAS_LIMIT' && error?.error?.message ? error.error : error;
     default:
       if (error?.code === 'ACTION_REJECTED') return `User rejected transaction`;
+      if (error?.reason === 'bad address checksum') return `Wrong address`;
       return error;
   }
 };

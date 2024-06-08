@@ -13,10 +13,11 @@ interface TokenListItem {
 
 export const TokenListItem = memo((props: TokenListItem) => {
   const { token, onClick } = props;
-  const balance = useMemo(() => {
-    if (token.balanceWei === '0') return '0';
-    return weiToAmount(token.balanceWei || 0, token.decimals || 18).toFixed(4);
-  }, [token.balanceWei]);
+
+  const balance = useMemo(
+    () => (token.balanceWei !== '0' ? weiToAmount(token.balanceWei || 0, token.decimals || 18).toFixed(4) : '0'),
+    [token.balanceWei, token.decimals],
+  );
 
   const price = useMemo(() => {
     if (!token.priceUSD) return;
@@ -29,11 +30,11 @@ export const TokenListItem = memo((props: TokenListItem) => {
   return (
     <button className="flex items-center w-full" onClick={onClick}>
       <div className="relative">
-        <img className="w-8 h-8 m-1 mr-3" src={token.logo || ICONS_TOKEN.mock} alt="" />
-        <img src={ICONS_CHAINS[token.chainId]} alt="" className="absolute bottom-0 right-1 w-4 h-4" />
+        <img loading="lazy" className="w-8 h-8 m-1 mr-3" src={token.logo || ICONS_TOKEN.mock} alt="" />
+        <img loading="lazy" src={ICONS_CHAINS[token.chainId]} alt="" className="absolute bottom-0 right-1 w-4 h-4" />
       </div>
       <div className="flex justify-between w-full">
-        <div>
+        <div className="text-start">
           <p>{token.symbol}</p>
           <p className="text-gray-main">{price?.cost ? `${price?.cost} $` : '~'}</p>
         </div>
