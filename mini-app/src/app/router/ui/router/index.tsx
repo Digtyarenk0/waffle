@@ -4,6 +4,7 @@ import { routes } from 'shared/constants/routes';
 
 import { useFetchTokensBalance } from 'features/tokens/model/hooks/tokens-balance/useTokensBalance';
 import { useFetchTokensLists } from 'features/tokens/model/hooks/useTokenList';
+import { useFeedTokens } from 'features/tokens/model/hooks/useTokenPrice';
 import { ListsUpdater } from 'features/tokens/ui/list-updater';
 
 import { Footer } from 'widgets/footer';
@@ -16,6 +17,7 @@ import { SendTokenTo } from 'pages/send-token/ui/page';
 export const RouterApp = () => {
   useFetchTokensLists();
   useFetchTokensBalance();
+  useFeedTokens();
 
   return (
     <div className="flex flex-col h-screen justify-between bg-[#213040]">

@@ -1,16 +1,18 @@
 import Big from 'big.js';
 import { memo, useMemo } from 'react';
 
-import { ICONS_CHAINS } from 'shared/constants/icons';
+import { ICONS_CHAINS, ICONS_TOKEN } from 'shared/constants/icons';
 import { weiToAmount } from 'shared/utils/amount';
 
 import { IToken } from 'features/tokens/model/store';
 
-interface HomeTokenItem extends IToken {
-  priceUSD?: string;
+interface TokenListItem {
+  token: IToken;
+  onClick?: () => void;
 }
 
-export const HomeTokenItem = memo((token: HomeTokenItem) => {
+export const TokenListItem = memo((props: TokenListItem) => {
+  const { token, onClick } = props;
   const balance = useMemo(() => {
     if (token.balanceWei === '0') return '0';
     return weiToAmount(token.balanceWei || 0, token.decimals || 18).toFixed(4);
@@ -25,9 +27,9 @@ export const HomeTokenItem = memo((token: HomeTokenItem) => {
   }, [token.priceUSD, balance]);
 
   return (
-    <div className="flex items-center w-full ">
+    <button className="flex items-center w-full" onClick={onClick}>
       <div className="relative">
-        <img className="w-8 h-8 m-1 mr-3" src={token.logo} alt="" />
+        <img className="w-8 h-8 m-1 mr-3" src={token.logo || ICONS_TOKEN.mock} alt="" />
         <img src={ICONS_CHAINS[token.chainId]} alt="" className="absolute bottom-0 right-1 w-4 h-4" />
       </div>
       <div className="flex justify-between w-full">
@@ -40,6 +42,6 @@ export const HomeTokenItem = memo((token: HomeTokenItem) => {
           <p className="text-gray-main">{price?.sum ? `${price?.sum} $` : '~'}</p>
         </div>
       </div>
-    </div>
+    </button>
   );
 });
