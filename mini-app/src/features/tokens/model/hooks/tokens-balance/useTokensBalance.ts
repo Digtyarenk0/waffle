@@ -124,9 +124,7 @@ export const useFetchTokensBalance = () => {
 
   const tokensWithBalance = useDebounce(tokens, 150).value;
   useEffect(() => {
-    if (tokensWithBalance) {
-      dispatch(updateTokens(tokensWithBalance));
-    }
+    dispatch(updateTokens(tokensWithBalance));
   }, [tokensWithBalance]);
 
   return;

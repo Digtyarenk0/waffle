@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { routes } from 'shared/constants/routes';
+import { Loader } from 'shared/ui/loader';
 
 import { useTypedSelector } from 'entities/store/model/useStore';
 
@@ -19,6 +20,6 @@ export const SendToken = () => {
     return { ...token, priceUSD: prices?.[token.symbol] };
   }, [tokens, prices, paramSendToken]);
 
-  if (!sendToken) return <>loading</>;
+  if (!sendToken) return <Loader />;
   return <SendTokenTo token={sendToken} />;
 };
