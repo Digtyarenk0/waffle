@@ -23,7 +23,7 @@ export const RouterApp = () => {
 
   return (
     <div className="bg-white-main flex flex-col min-h-screen overflow-clip">
-      <div className="overflow-hidden">
+      <div className="overflow-hidden min-h-[calc(100vh_-_70px)]">
         <Routes>
           <Route path={routes.main} element={<HomePage />} />
           <Route path={routes.receive} element={<ReceivePage />} />
@@ -34,7 +34,7 @@ export const RouterApp = () => {
       </div>
       <Footer />
       <ListsUpdater />
-      <BackButton onClick={() => navigate('')} />
+      <BackButton onClick={() => navigate(routes.main)} />
     </div>
   );
 };

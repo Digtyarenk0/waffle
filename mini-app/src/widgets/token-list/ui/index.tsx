@@ -26,7 +26,7 @@ export const TokenList = (props: TokenListProps) => {
   }, [tokens, prices]);
 
   return (
-    <div>
+    <div className="">
       {sorted?.map((t) => <TokenListItem token={t} key={t.address} onClick={() => tokenOnClick?.(t.address)} />)}
     </div>
   );

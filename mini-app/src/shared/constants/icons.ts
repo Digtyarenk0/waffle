@@ -19,4 +19,5 @@ export const ICONS_UI = {
   home: iconsUIPath + '/home.svg',
   copy: iconsUIPath + '/copy.svg',
   scan: iconsUIPath + '/scan.svg',
+  waffle: iconsUIPath + '/waffle.svg',
 };

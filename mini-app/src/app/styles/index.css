@@ -18,9 +18,11 @@
   font-style: normal; 
 }
 
-html, body {margin: 0; height: 100%; overflow: hidden}
+/* html, body {margin: 0; height: 100%; overflow: hidden} */
+
 
 body {
+  /* position: relative; */
   font-family: 'sf-regular', 'sans-serif';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
