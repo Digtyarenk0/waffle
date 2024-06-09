@@ -14,7 +14,7 @@ export const useClipboard = (val: string, t = 550) => {
     if (isCopied) {
       setTimeout(() => setIsCopied(false), t);
     }
-  }, [isCopied]);
+  }, [isCopied, t]);
 
   return useMemo(
     () => ({

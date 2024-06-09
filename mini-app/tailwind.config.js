@@ -4,22 +4,32 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   theme: {
     extend: {
+      fontFamily: {
+        regular: ['sf-regular', 'sans-serif'],
+        bold: ['sf-bold', 'sans-serif'],
+      },
       colors: {
         black: {
-          theme: "#1B1B1B",
+          theme: "#18181c",
         },
         gray: {
-          main: "#71798D",
+          main: "#6b6b6b",
         },
         white: {
           main: '#EBEBED'
         },
-        green: {
-          main: '#3DFB87',
-          light: '#41FD8D'
+        coral: {
+          main: '#df8473',
+        },
+        yellow: {
+          main: '#fcdd8d',
         }
       }
     },
+  },
+  corePlugins: {
+    fontFamily: false,
+    colors: false,
   },
   plugins: [
     require('tailwindcss'),

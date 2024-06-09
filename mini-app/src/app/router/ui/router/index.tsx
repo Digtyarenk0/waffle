@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { BackButton } from '@vkruglikov/react-telegram-web-app';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 
 import { routes } from 'shared/constants/routes';
 
@@ -15,13 +16,14 @@ import { SelectToken } from 'pages/select-token/ui/page';
 import { SendToken } from 'pages/send-token/ui/page';
 
 export const RouterApp = () => {
+  const navigate = useNavigate();
   useFetchTokensLists();
   useFetchTokensBalance();
   useFeedTokens();
 
   return (
-    <div className="flex flex-col h-screen justify-between bg-[#213040]">
-      <div className="overflow-hidden h-[calc(100vh_-_66px)]">
+    <div className="bg-white-main flex flex-col min-h-screen overflow-clip">
+      <div className="overflow-hidden">
         <Routes>
           <Route path={routes.main} element={<HomePage />} />
           <Route path={routes.receive} element={<ReceivePage />} />
@@ -32,6 +34,7 @@ export const RouterApp = () => {
       </div>
       <Footer />
       <ListsUpdater />
+      <BackButton onClick={() => navigate('')} />
     </div>
   );
 };

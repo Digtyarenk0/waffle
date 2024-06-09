@@ -26,6 +26,6 @@ export const useFetchListCallback = (): ((listUrl: string, skipValidation?: bool
         dispatch(fetchTokenListRejected({ url: listUrl, requestId, errorMessage: error?.message }));
       }
     },
-    [dispatch, RPC_PROVIDERS],
+    [dispatch],
   );
 };

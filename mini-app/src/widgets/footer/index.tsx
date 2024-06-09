@@ -1,54 +1,38 @@
-import classNames from 'classnames';
-import { ReactElement } from 'react';
-import { HiWallet } from 'react-icons/hi2';
-import { TbProgressHelp } from 'react-icons/tb';
+import { useHapticFeedback } from '@vkruglikov/react-telegram-web-app';
 import { NavLink } from 'react-router-dom';
 
+import { ICONS_UI } from 'shared/constants/icons';
 import { routes } from 'shared/constants/routes';
 
-interface FooterBtnProps {
-  ico: ReactElement;
-  text: string;
-  route: string;
-  className?: string;
-}
-
-const style = 'p-2 text-center font-medium transition-all border-t-[1px] border-gray-main';
-
-const FooterBtn = ({ text, ico, route, className }: FooterBtnProps) => (
-  <NavLink
-    to={route}
-    className={({ isActive }) => {
-      const activeStyle = isActive ? 'text-green-main' : '';
-      return classNames(style, activeStyle, className);
-    }}
-  >
-    <div>{ico}</div>
-    {text}
-  </NavLink>
-);
-
 export const Footer = () => {
+  const [impactOccurred] = useHapticFeedback();
+
   return (
-    <div className="grid grid-cols-3 grid-rows-1 w-full">
-      <FooterBtn
-        route={routes.main}
-        ico={<HiWallet size="25px" className="mx-auto text-green-main" />}
-        text="Home"
-        className="text-green-main"
-      />
-      <FooterBtn
-        route=""
-        ico={<TbProgressHelp size="25px" className="mx-auto text-white-main" />}
-        className="text-white-main "
-        text="-"
-      />
-      <FooterBtn
-        route=""
-        ico={<TbProgressHelp size="25px" className="mx-auto text-white-main" />}
-        className="text-white-main "
-        text="-"
-      />
+    <div className="h-[70px] bg-white-main border-t-[0.5px] fixed bottom-0 w-full grid grid-cols-3 px-2 pb-6 border-t-gray-main">
+      <NavLink
+        to={routes.main}
+        onClick={() => impactOccurred('light')}
+        className="flex flex-col justify-center items-center"
+      >
+        <img src={ICONS_UI.swap} className="w-8" alt="" />
+        <p className="text-gray-main text-sm">Swap</p>
+      </NavLink>
+      <NavLink
+        to={routes.main}
+        className="flex flex-col justify-center items-center relative"
+        onClick={() => impactOccurred('light')}
+      >
+        <img src={ICONS_UI.home} className="w-[50px] p-[10px] absolute -top-6 rounded-full bg-coral-main" alt="" />
+        <p className="text-gray-main text-sm mt-8">Home</p>
+      </NavLink>
+      <NavLink
+        to={routes.main}
+        onClick={() => impactOccurred('light')}
+        className="flex flex-col justify-center items-center"
+      >
+        <img src={ICONS_UI.stake} className="w-7" alt="" />
+        <p className="text-gray-main text-sm">Stake</p>
+      </NavLink>
     </div>
   );
 };
