@@ -18,11 +18,15 @@
   font-style: normal; 
 }
 
-/* html, body {margin: 0; height: 100%; overflow: hidden} */
-
+html, body  {
+  margin: 0; 
+  height: 100%; 
+  position: relative;
+  background: #fff;
+  overflow: hidden;
+}
 
 body {
-  /* position: relative; */
   font-family: 'sf-regular', 'sans-serif';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -34,7 +38,7 @@ p,button {
 
 *{
   --sb-track-color: transparent;
-  --sb-thumb-color: #305241;
+  --sb-thumb-color: #EBEBED;
 }
 
 *::-webkit-scrollbar {

@@ -22,8 +22,8 @@ export const RouterApp = () => {
   useFeedTokens();
 
   return (
-    <div className="bg-white-main flex flex-col min-h-screen overflow-clip">
-      <div className="overflow-hidden min-h-[calc(100vh_-_70px)]">
+    <div className="bg-white-main flex flex-col">
+      <div>
         <Routes>
           <Route path={routes.main} element={<HomePage />} />
           <Route path={routes.receive} element={<ReceivePage />} />

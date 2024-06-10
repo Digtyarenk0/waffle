@@ -77,7 +77,9 @@ export const HomePage = () => {
               <p className="text-gray-main">More</p>
             </button>
           </div>
-          <div className="mt-2 px-4">{tokensDeb ? <TokenList tokens={tokensDeb} /> : <TokenListItemSkeleton />}</div>
+          <div className="mt-2 px-4 h-[calc(100vh_-_230px)] overflow-scroll">
+            {tokensDeb ? <TokenList tokens={tokensDeb.concat(tokensDeb)} /> : <TokenListItemSkeleton />}
+          </div>
         </div>
       </div>
     </div>
