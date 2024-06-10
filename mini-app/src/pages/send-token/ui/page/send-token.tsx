@@ -140,7 +140,7 @@ export const SendTokenTo = (props: SendTokenToProps) => {
               example={``}
             />
             <ButtonPastFromBuffer
-              className="absolute top-2 right-4 font-semibold text-green-main"
+              className="absolute top-2 right-4 font-boldsf text-green-main"
               setBufferValue={setAddressFromBuffer}
             />
           </div>
@@ -189,7 +189,7 @@ export const SendTokenTo = (props: SendTokenToProps) => {
         <button
           className={classNames(
             'w-full h-10 rounded-2xl mt-2 flex items-center justify-center',
-            !disabled ? 'text-black-theme font-semibold bg-green-main' : 'bg-gray-main',
+            !disabled ? 'text-black-theme font-boldsf bg-green-main' : 'bg-gray-main',
           )}
           disabled={disabled}
           onClick={handleTransferToken}

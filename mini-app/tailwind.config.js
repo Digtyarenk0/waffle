@@ -1,32 +1,34 @@
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
+  mode: 'jit',
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   theme: {
-    extend: {
-      fontFamily: {
-        regular: ['sf-regular', 'sans-serif'],
-        bold: ['sf-bold', 'sans-serif'],
-      },
-      colors: {
-        black: {
-          theme: "#18181c",
-        },
-        gray: {
-          main: "#6b6b6b",
-          light: "#C7C7C7",
-        },
-        white: {
-          main: '#EBEBED'
-        },
-        coral: {
-          main: '#df8473',
-        },
-        yellow: {
-          main: '#fcdd8d',
-        }
-      }
+    fontFamily: {
+      regularsf: ['regularsf'],
+      boldsf: ['boldsf'],
     },
+    colors: {
+      black: {
+        theme: "#18181c",
+      },
+      gray: {
+        main: "#6b6b6b",
+        light: "#C7C7C7",
+      },
+      white: {
+        main: '#EBEBED'
+      },
+      purple: {
+        main: '#7763e5'
+      },
+      coral: {
+        main: '#df8473',
+      },
+      yellow: {
+        main: '#fcdd8d',
+      }
+    }
   },
   corePlugins: {
     fontFamily: false,

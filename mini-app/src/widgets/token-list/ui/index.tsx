@@ -26,8 +26,11 @@ export const TokenList = (props: TokenListProps) => {
   }, [tokens, prices]);
 
   return (
-    <div className="">
-      {sorted?.map((t) => <TokenListItem token={t} key={t.address} onClick={() => tokenOnClick?.(t.address)} />)}
+    <div>
+      {sorted?.map((t) => (
+        <TokenListItem token={t} key={`${t.address}${t.chainId}`} onClick={() => tokenOnClick?.(t.address)} />
+      ))}
+      <button className="mt-4 mb-12 w-full text-center text-coral-main">Manage crypto</button>
     </div>
   );
 };

@@ -14,8 +14,6 @@ import { DEFAULT_CHAIN_ID, SupportedChainId } from 'entities/wallet/model/types/
 
 import { IToken } from 'features/tokens/model/store';
 
-import { Header } from 'widgets/header';
-
 type Inputs = {
   address: string;
   amount: number;
@@ -92,24 +90,24 @@ export const SendToken = () => {
 
   return (
     <div className="w-full h-full">
-      <Header />
+      {/* <Header /> */}
       <div className="mt-6 border-t-2 border-gray-main" />
       <form className="px-3" onSubmit={handleSubmit(onSubmit)}>
         <div className="h-[58vh] overflow-scroll">
           <div className="mt-4">
-            <p className="text-gray-main font-semibold mb-2">Select token:</p>
+            <p className="text-gray-main font-boldsf mb-2">Select token:</p>
             <SearchBar setSelected={setSelectedToken} tokens={tokens || []} />
             {selectedToken && <TokenItem {...selectedToken} />}
           </div>
           <div className="mt-4">
-            <p className="text-gray-main font-semibold mb-2">Address of the recipient:</p>
+            <p className="text-gray-main font-boldsf mb-2">Address of the recipient:</p>
             <input
               className="p-2 text-xs text-white-main h-8 w-[330px] bg-transparent autofill:!bg-transparent border-[1px] rounded-sm border-gray-main"
               {...register('address', { minLength: 42, maxLength: 42, required: true })}
             />
           </div>
           <div className="mt-4">
-            <p className="text-gray-main font-semibold mb-2">Sending MATIC:</p>
+            <p className="text-gray-main font-boldsf mb-2">Sending MATIC:</p>
             <input
               className="p-2 text-xs text-white-main h-8 w-[330px] bg-transparent autofill:!bg-transparent border-[1px] rounded-sm border-gray-main"
               {...register('amount', { max: Number(nativBalance || 0), min: 0.0001, required: true })}
@@ -122,7 +120,7 @@ export const SendToken = () => {
         <button
           className={classNames(
             'w-full h-10 rounded-2xl mt-2',
-            !(!isValid || isTxLoading) ? 'text-black-theme font-semibold bg-green-main' : 'bg-gray-main',
+            !(!isValid || isTxLoading) ? 'text-black-theme font-boldsf bg-green-main' : 'bg-gray-main',
           )}
           disabled={!isValid || isTxLoading}
           type="submit"

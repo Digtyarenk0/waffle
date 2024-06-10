@@ -1,39 +1,45 @@
-/* @import "./normalize.css"; */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
 @font-face {
-  font-family: 'sf-regular';
-  src: url('./fonts/sfpro-regular.OTF') format('opentype');
-  font-weight: normal;
-  font-style: normal;
+  font-family: 'regularsf';
+  src: url('./fonts/sfpro-regular.OTF');
+  font-weight: 400;
 }
+$font-regularsf: "regularsf";
 
 @font-face {
-  font-family: 'sf-bold';
-  src: url('./fonts/sfpro-bold.OTF') format('opentype');
-  font-weight: normal;
-  font-style: normal; 
+  font-family: 'boldsf';
+  src: url('./fonts/sfpro-bold.OTF');
 }
+$font-boldsf: "boldsf";
 
 html, body  {
   margin: 0; 
-  height: 100%; 
-  position: relative;
-  background: #fff;
+  min-height: 100vh; 
   overflow: hidden;
+  background: #ebebed;
+}
+
+.font-sfregular {
+  font-family: 'regularsf', sans-serif;
+}
+
+.font-sfbold {
+  font-family: 'sfbold', serif;
 }
 
 body {
-  font-family: 'sf-regular', 'sans-serif';
+  font-family: 'regularsf', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 p,button {
-  color: #EBEBED
+  font-family: 'regularsf', 'sans-serif';
+  color: #6b6b6b
 }
 
 *{
