@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { routes } from 'shared/constants/routes';
+import { SEARCH_PARAMS } from 'shared/constants/serchparams';
 
 import { useTypedSelector } from 'entities/store/model/useStore';
 
@@ -20,7 +21,7 @@ export const SelectToken = () => {
 
   const toSend = useCallback(
     (address: string) => {
-      navigate(`${routes.send_token}/?${routes.send_token}=${address}`);
+      navigate(`${routes.send_token}?${SEARCH_PARAMS.send_token}=${address}`);
     },
     [navigate],
   );

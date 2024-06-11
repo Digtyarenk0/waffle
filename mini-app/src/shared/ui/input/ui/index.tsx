@@ -42,7 +42,7 @@ export const Input = memo(function Input(props: InputProps) {
   // }, [value, isFocus]);
 
   return (
-    <div className={cs('relative text-white-main', className)}>
+    <div className={cs('relative text-gray-main', className)}>
       <input
         {...register}
         {...otherProps}
@@ -54,7 +54,7 @@ export const Input = memo(function Input(props: InputProps) {
       />
       {value && reset && (
         <button onClick={() => reset(register.name)}>
-          <TiDelete className="absolute top-2 right-2 text-gray-main" size="25px" />
+          <TiDelete className="absolute top-2 right-2 text-gray-light" size="25px" />
         </button>
       )}
       {isShowPlaceholder && <p className="absolute top-2 left-4 text-gray-500">{placeholder}</p>}

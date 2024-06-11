@@ -23,7 +23,7 @@ export const RouterApp = () => {
 
   return (
     <div className="bg-white-main flex flex-col">
-      <div>
+      <div className="min-h-[100vh]">
         <Routes>
           <Route path={routes.main} element={<HomePage />} />
           <Route path={routes.receive} element={<ReceivePage />} />
