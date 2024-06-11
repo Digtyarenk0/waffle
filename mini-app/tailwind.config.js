@@ -20,7 +20,7 @@ module.exports = {
         main: '#EBEBED'
       },
       purple: {
-        main: '#7763e5'
+        main: '#8f81db'
       },
       coral: {
         main: '#df8473',

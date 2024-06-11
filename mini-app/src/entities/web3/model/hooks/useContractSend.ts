@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { TransactionRequest } from '@ethersproject/providers';
+import { TransactionRequest, TransactionResponse } from '@ethersproject/providers';
 import retry from 'async-retry';
 import Big from 'big.js';
-import { Contract, ContractReceipt } from 'ethers';
+import { Contract } from 'ethers';
 import { Deferrable } from 'ethers/lib/utils';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
@@ -17,12 +17,24 @@ import { SupportedChainId } from 'entities/wallet/model/types/chain';
 
 import { GAS_LIMIT_ADDITIONAL, GAS_LIMIT_MULTIPLIER } from '../constant/gasLimit';
 // import { isOverrides } from '../helper/check-interface';
-import { ContractMethodsType, MethodParametersType, TransactionState } from '../types/contracts';
+import { ContractMethodsType, MethodParametersType } from '../types/contracts';
 
 interface UseSingleSendOptions {
   gasLimitMultiplier?: number;
   gasLimitAdditional?: number;
   showErrorToast?: boolean;
+}
+
+interface SendMethodResponse<C extends Contract, M extends ContractMethodsType<C>> {
+  contract: C;
+  method: M;
+  dataTx: Deferrable<TransactionRequest>;
+  send: () => Promise<TransactionResponse>;
+}
+
+export interface SingleSendMethodResponse<C extends Contract, M extends ContractMethodsType<C>> {
+  tx: SendMethodResponse<C, M> | null;
+  error: any;
 }
 
 export const useSingleSendMethod = <
@@ -43,12 +55,12 @@ export const useSingleSendMethod = <
   } = options || {};
 
   return useCallback(
-    async (...inputs: P): Promise<TransactionState> => {
+    async (...inputs: P): Promise<SingleSendMethodResponse<C, M>> => {
       if (account) {
         if (contract && wallet) {
           const chainId: SupportedChainId = (await contract.provider.getNetwork()).chainId;
           try {
-            const txData: Deferrable<TransactionRequest> = {
+            const dataTx: Deferrable<TransactionRequest> = {
               to: contract.address,
             };
             // Multiply estimateGas by gasLimitMultiplier
@@ -57,7 +69,7 @@ export const useSingleSendMethod = <
 
               const gasPrice = await contract.provider.getGasPrice();
               // Up gas price 10%
-              txData.gasPrice = gasPrice.mul(BigNumber.from(110)).div(BigNumber.from(100));
+              dataTx.gasPrice = gasPrice.mul(BigNumber.from(110)).div(BigNumber.from(100));
 
               const estimateGas: BigNumber = (await retry(async (bail) => {
                 try {
@@ -77,17 +89,26 @@ export const useSingleSendMethod = <
                 gasLimitModified.add(gasLimitAdditional);
               }
 
-              txData.gasLimit = gasLimitModified.toFixed(0);
+              dataTx.gasLimit = gasLimitModified.toFixed(0);
             }
 
-            txData.data = contract.interface.encodeFunctionData(methodName, inputs);
+            dataTx.data = contract.interface.encodeFunctionData(methodName, inputs);
             const connectedWallet = wallet.connect(RPC_PROVIDERS[chainId]);
-            txData.nonce = await connectedWallet.getTransactionCount();
-            const tx = await connectedWallet.sendTransaction(txData);
-            const result: ContractReceipt = await tx.wait();
-            dispatch(incTxCount());
+            dataTx.nonce = await connectedWallet.getTransactionCount();
+
+            const send = () => {
+              const tx = connectedWallet.sendTransaction(dataTx);
+              dispatch(incTxCount());
+              return tx;
+            };
+
             return {
-              result,
+              tx: {
+                contract,
+                method: methodName,
+                dataTx,
+                send,
+              },
               error: null,
             };
           } catch (e: any) {
@@ -95,7 +116,7 @@ export const useSingleSendMethod = <
             const parsedError = parseError(e, chainId);
             showErrorToast && parseToastError(e, chainId);
             return {
-              result: null,
+              tx: null,
               error: parsedError?.message || parsedError,
             };
           }
@@ -106,7 +127,7 @@ export const useSingleSendMethod = <
         toast.warning(`Connect wallet`);
       }
       return {
-        result: null,
+        tx: null,
         error: null,
       };
     },

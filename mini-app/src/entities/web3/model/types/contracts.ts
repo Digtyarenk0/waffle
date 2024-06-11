@@ -19,9 +19,10 @@ export type EventReturnType<C extends Contract, M extends keyof C['callStatic']>
 >;
 
 export interface TransactionState {
-  result: ContractReceipt | null;
+  send: ContractReceipt | null;
   error: any;
 }
+
 // Overrides from typechain
 export type Overrides = PayableOverrides & { from?: string | Promise<string> };
 

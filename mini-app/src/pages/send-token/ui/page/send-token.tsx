@@ -1,3 +1,4 @@
+import Big from 'big.js';
 import classNames from 'classnames';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -9,9 +10,9 @@ import { routes } from 'shared/constants/routes';
 import { ButtonPastFromBuffer } from 'shared/ui/button-buffer/ui';
 import { Input } from 'shared/ui/input';
 import { TokenListItem } from 'shared/ui/token-item';
-import { TransactionInfoBlock } from 'shared/ui/transaction-info';
 import { amountToWei, weiToAmount } from 'shared/utils/amount';
 
+import { useTypedSelector } from 'entities/store/model/useStore';
 import { useWalletApp } from 'entities/wallet/model/context';
 import { useERC20Contract } from 'entities/web3/model/hooks/useContract';
 import { useContractEstimatedGas } from 'entities/web3/model/hooks/useContractEstimatedGas';
@@ -19,6 +20,9 @@ import { useSingleSendMethod } from 'entities/web3/model/hooks/useContractSend';
 import { TransactionState } from 'entities/web3/model/types/contracts';
 
 import { IToken } from 'features/tokens/model/store';
+
+import { ConfirmTransactionTransfer } from 'widgets/confirm-transaction/ui';
+import { useModalContext } from 'widgets/modal/model/provider';
 
 import { onChangeAddress, onChangeAmount } from 'pages/send-token/model/helper';
 
@@ -33,8 +37,11 @@ interface SendTokenToProps {
 export const SendTokenTo = (props: SendTokenToProps) => {
   const { token: sendToken } = props;
 
+  const price = useTypedSelector((s) => s.tokens.prices?.[sendToken.symbol]);
+
   const navigate = useNavigate();
   const { account } = useWalletApp();
+  const { setModalData } = useModalContext();
 
   const tokenContract = useERC20Contract(sendToken.address, sendToken.chainId);
   const transferToken = useSingleSendMethod(tokenContract, 'transfer');
@@ -100,10 +107,27 @@ export const SendTokenTo = (props: SendTokenToProps) => {
     setTxLoading(true);
     setTxResult(undefined);
     const transferAmount = amountToWei(amount, sendToken.decimals).toString();
+    const cost = Big(amount)
+      .mul(price || 0)
+      .toString();
     try {
       const txData = await transferToken(address, transferAmount);
       console.log('txData:', txData);
-      setTxResult(txData);
+      if (txData.tx) {
+        setModalData({
+          children: (
+            <ConfirmTransactionTransfer
+              transaction={txData.tx}
+              asset={sendToken}
+              from={account}
+              to={address}
+              amount={amount}
+              cost={cost}
+            />
+          ),
+        });
+      }
+      // setTxResult(txData);
     } catch (error: any) {
       console.log({ error });
     } finally {
@@ -118,7 +142,7 @@ export const SendTokenTo = (props: SendTokenToProps) => {
     <div className="container mx-auto min-h-[80vh] overflow-y-scroll p-4  flex flex-col justify-between">
       <div>
         <p className="text-2xl text-center mb-4 mt-5">Send {symbol}</p>
-        <div className="px-4 pb-2 pt-1 bg-gray-light/25 rounded-2xl">
+        <div className="px-4 pb-2 pt-1 bg-yellow-main rounded-2xl">
           {sendToken && (
             <div className="mt-8 mb-4">
               <TokenListItem token={sendToken} onClick={() => navigate(routes.select_token)} />
@@ -128,7 +152,7 @@ export const SendTokenTo = (props: SendTokenToProps) => {
             <p className="font-medium text-gray-main">Address or domain</p>
             <div className="relative">
               <Input
-                classNameInput="w-full p-2 pl-4 pr-14"
+                classNameInput="w-full p-2 pl-4 pr-14 text-sm"
                 register={register('address', {
                   onChange: (e) => onChangeAddress({ e, setError, clearErrors }),
                   required: true,
@@ -178,25 +202,25 @@ export const SendTokenTo = (props: SendTokenToProps) => {
           {/* // Data */}
           <div className="mt-8">
             <p className="text-red-500">{txResult?.error}</p>
-            <TransactionInfoBlock
+            {/* <TransactionInfoBlock
               hash={txResult?.result?.transactionHash}
               gasUsed={txResult?.result?.gasUsed.toString()}
               chainId={sendToken?.chainId}
-            />
+            /> */}
           </div>
         </div>
       </div>
       <div className="mb-10">
         <button
           className={classNames(
-            'w-full h-10 rounded-2xl mt-3 flex items-center justify-center text-gray-main',
-            !disabled ? ' font-semibold bg-yellow-main' : 'bg-gray-main',
+            'w-full h-10 rounded-2xl mt-3 flex items-center justify-center text-white-main',
+            !disabled ? ' font-semibold bg-coral-main' : 'bg-gray-light ',
           )}
           disabled={disabled}
           onClick={handleTransferToken}
           type="submit"
         >
-          {txLoading ? 'Processing' : 'Send'}
+          {txLoading ? 'Preparing' : 'Send'}
         </button>
       </div>
     </div>

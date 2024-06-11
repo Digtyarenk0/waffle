@@ -8,6 +8,7 @@ import { WalletAppContextProvider } from 'entities/wallet/model/context';
 import { BlockContextProvider } from 'entities/web3/model/context/block-context';
 
 import { ErrorBoundary } from 'widgets/error-boundary/ui';
+import { ModalProvider } from 'widgets/modal/model/provider';
 
 import { TelegramThemeProvider, TelegramWebProvider } from './providers/telegram';
 import { RouterApp } from './router/ui/router';
@@ -32,17 +33,19 @@ export const App = () => {
             <BlockContextProvider>
               <Provider store={store}>
                 <BrowserRouter>
-                  <RouterApp />
-                  <ToastContainer
-                    position="top-right"
-                    autoClose={4000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    pauseOnFocusLoss
-                    draggable
-                    theme="dark"
-                  />
+                  <ModalProvider>
+                    <RouterApp />
+                    <ToastContainer
+                      position="top-right"
+                      autoClose={4000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      pauseOnFocusLoss
+                      draggable
+                      theme="dark"
+                    />
+                  </ModalProvider>
                 </BrowserRouter>
               </Provider>
             </BlockContextProvider>
