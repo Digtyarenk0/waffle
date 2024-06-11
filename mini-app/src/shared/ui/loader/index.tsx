@@ -3,7 +3,7 @@ import { HTMLAttributes } from 'react';
 
 export const Loader = (props: HTMLAttributes<HTMLDivElement>) => (
   <div {...props} className={classNames('w-full h-full flex justify-center items-center', props.className)}>
-    <div className=" bg-[#f98672] text-white transition-all group w-11 h-11 rounded-full duration-300 ease-in-out">
+    <div className=" bg-coral-main text-white transition-all group w-11 h-11 rounded-full duration-300 ease-in-out">
       <svg
         className="animate-spin m-auto mt-1.5"
         width="33"

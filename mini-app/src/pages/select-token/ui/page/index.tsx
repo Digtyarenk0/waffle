@@ -31,7 +31,7 @@ export const SelectToken = () => {
 
   return (
     <div className="container mx-auto h-full overflow-y-scroll p-4">
-      <p className="text-2xl font-bold mb-4">Token List</p>
+      <p className="text-2xl mb-4">Token List</p>
       <form>
         <input
           type="text"
@@ -40,9 +40,7 @@ export const SelectToken = () => {
           className="w-full p-2 border border-gray-300 rounded mb-4"
         />
       </form>
-      <ul>
-        <TokenList tokens={filteredTokens} tokenOnClick={toSend} />
-      </ul>
+      <TokenList tokens={filteredTokens} tokenOnClick={toSend} />
     </div>
   );
 };

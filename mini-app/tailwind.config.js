@@ -1,25 +1,38 @@
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
+  mode: 'jit',
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   theme: {
-    extend: {
-      colors: {
-        black: {
-          theme: "#1B1B1B",
-        },
-        gray: {
-          main: "#71798D",
-        },
-        white: {
-          main: '#EBEBED'
-        },
-        green: {
-          main: '#3DFB87',
-          light: '#41FD8D'
-        }
-      }
+    fontFamily: {
+      regularsf: ['regularsf'],
+      boldsf: ['boldsf'],
     },
+    colors: {
+      black: {
+        theme: "#18181c",
+      },
+      gray: {
+        main: "#6b6b6b",
+        light: "#C7C7C7",
+      },
+      white: {
+        main: '#EBEBED'
+      },
+      purple: {
+        main: '#7763e5'
+      },
+      coral: {
+        main: '#df8473',
+      },
+      yellow: {
+        main: '#fcdd8d',
+      }
+    }
+  },
+  corePlugins: {
+    fontFamily: false,
+    colors: false,
   },
   plugins: [
     require('tailwindcss'),

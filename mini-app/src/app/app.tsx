@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -15,6 +16,14 @@ import './styles/index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const App = () => {
+  // Disable scroll
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   return (
     <ErrorBoundary>
       <TelegramWebProvider>

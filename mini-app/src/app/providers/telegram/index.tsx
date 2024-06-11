@@ -13,11 +13,17 @@ export const TelegramThemeProvider = ({ children }: { children: React.ReactNode 
       theme={
         themeParams.text_color
           ? {
-              algorithm: theme.darkAlgorithm,
+              algorithm: theme.defaultAlgorithm,
               token: {
                 colorText: themeParams.text_color,
                 colorPrimary: themeParams.button_color,
-                colorBgBase: themeParams.bg_color,
+                colorBgBase: '#EBEBED',
+                colorBgContainer: '#EBEBED',
+                colorBgLayout: '#EBEBED',
+                colorFill: '#EBEBED',
+                colorBorder: '#EBEBED',
+                colorBorderSecondary: '#EBEBED',
+                colorBgMask: '#EBEBED',
               },
             }
           : undefined

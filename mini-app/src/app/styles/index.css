@@ -1,24 +1,50 @@
-/* @import "./normalize.css"; */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
+@font-face {
+  font-family: 'regularsf';
+  src: url('./fonts/sfpro-regular.OTF');
+  font-weight: 400;
+}
+$font-regularsf: "regularsf";
+
+@font-face {
+  font-family: 'boldsf';
+  src: url('./fonts/sfpro-bold.OTF');
+}
+$font-boldsf: "boldsf";
+
+body, html {
+  margin: 0; 
+  overflow: hidden;
+  height: 100%;
+  background: #ebebed;
+}
+
+.font-sfregular {
+  font-family: 'regularsf', sans-serif;
+}
+
+.font-sfbold {
+  font-family: 'sfbold', serif;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'regularsf', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 p,button {
-  color: #fff
+  font-family: 'regularsf', 'sans-serif';
+  color: #6b6b6b
 }
 
 *{
   --sb-track-color: transparent;
-  --sb-thumb-color: #305241;
+  --sb-thumb-color: #EBEBED;
 }
 
 *::-webkit-scrollbar {
